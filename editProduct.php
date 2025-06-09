@@ -1,10 +1,45 @@
+<?php
+include('db/database.php');
+$product = [
+    'product_name' => '',
+    'brand' => '',
+    'stock_left' => '',
+    'price' => ''
+];
+$message = '';
+
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    // Handle form submission
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $name = mysqli_real_escape_string($connection, $_POST['product_name']);
+        $brand = mysqli_real_escape_string($connection, $_POST['brand']);
+        $stock = intval($_POST['stock_left']);
+        $price = floatval($_POST['price']);
+        $update = mysqli_query($connection, "UPDATE products SET product_name='$name', brand='$brand', stock_left=$stock, price=$price WHERE id=$id");
+        if ($update) {
+            $message = "Product updated successfully!";
+            // Optionally redirect to product page after update
+            echo "<script>alert('Product updated successfully!');window.location.href='product.php';</script>";
+            exit;
+        } else {
+            $message = "Failed to update product.";
+        }
+    }
+    // Fetch product data for form
+    $result = mysqli_query($connection, "SELECT * FROM products WHERE id = $id");
+    if ($result && mysqli_num_rows($result) > 0) {
+        $product = mysqli_fetch_assoc($result);
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Document</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+  <title>Edit Product</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
         .header { background-color: #2c6ea3;
             height: 50px;
@@ -99,30 +134,15 @@
     }
   </style>
 </head>
-
-<?php
-include('db/database.php');
-$product = [
-    'product_name' => '',
-    'brand' => '',
-    'stock_left' => '',
-    'price' => ''
-];
-
-if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
-    $result = mysqli_query($connection, "SELECT * FROM products WHERE id = $id");
-    if ($result && mysqli_num_rows($result) > 0) {
-        $product = mysqli_fetch_assoc($result);
-    }
-}
-?>
-
+<body>
 <div class="header"></div>
 <div class="container mt-4">
     <div class="col-lg-4">
         <div class="tab-container">
-            <div class="Exit-button">X</div>
+            <div class="Exit-button"><a href="product.php" style="text-decoration:none;color:black;">X</a></div>
+            <?php if ($message) { ?>
+                <div class="alert alert-info"><?php echo $message; ?></div>
+            <?php } ?>
             <form method="POST" action="editProduct.php?id=<?php echo htmlspecialchars($_GET['id']); ?>">
                 <div class="Product-name">Product Name:
                     <input type="text" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>" required>
@@ -138,7 +158,8 @@ if (isset($_GET['id'])) {
                 </div>
                 <button type="submit" class="Confirm-button">Update</button>
             </form>
-          </div>
-
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -183,7 +183,10 @@
                                         echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
                                         echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
                                         echo '<td>' . htmlspecialchars($row['price']) . '</td>';
-                                        echo '<td><a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" class="addbutton btn btn-secondary btn-sm">Edit</a></td>';
+                                        echo '<td>
+    <a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #0d6efd; text-decoration: underline; margin-right: 15px;">Edit</a>
+    <a href="deleteProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>
+</td>';
                                         echo '</tr>';
                                     }
                                 } else {

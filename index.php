@@ -346,7 +346,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = row.children[0].textContent;
             const stock = parseInt(row.children[2].textContent); // Stock Left column
             const price = parseFloat(row.children[3].textContent.replace(/[^\d.]/g, ''));
-            
+
+            if (stock === 0) {
+                alert('Cannot add item with 0 stock!');
+                return;
+            }
+
             if (cart[productId]) {
                 if (cart[productId].quantity < cart[productId].stock) {
                     cart[productId].quantity += 1;
@@ -355,12 +360,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } else {
                 cart[productId] = {
-    id: productId, // <-- add this line
-    name: name,
-    price: price,
-    quantity: 1,
-    stock: stock
-};
+                    id: productId,
+                    name: name,
+                    price: price,
+                    quantity: 1,
+                    stock: stock
+                };
             }
             renderCart();
         });

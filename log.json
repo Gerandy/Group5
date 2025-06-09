@@ -1,0 +1,19 @@
+[
+    {
+        "cart": [
+            {
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 50000,
+        "change": 0,
+        "id": "txn_68470b1ab2412",
+        "datetime": "2025-06-09 18:26:02"
+    }
+]

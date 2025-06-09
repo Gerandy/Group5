@@ -15,47 +15,47 @@
             align-items: center;
             justify-content: center;
         }
-        .gcash-container {
-            background-color:rgb(0, 114, 190);
+        .maya-container {
+            background-color:rgb(47, 242, 158);
             border-radius: 20px;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            width: 400px;
-            padding: 30px 30px 20px 30px;
+            width: 1000px;
+            padding: 20px;
             color: #fff;
             position: relative;
         }
-        .gcash-logo {
+        .maya-logo {
             display: block;
             margin: 0 auto 20px auto;
-            width: 80px;
+            width: 300px;
         }
-        .gcash-details {
+        .maya-details {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .gcash-info {
+        .maya-info {
             flex: 1;
-        }
-        .gcash-info h4, .gcash-info p {
+        } 
+        .maya-info h4, .maya-info p {
             margin: 0;
         }
-        .gcash-qr {
+        .maya-qr {
             margin-left: 20px;
         }
-        .gcash-qr img {
-            width: 90px;
-            height: 90px;
+        .maya-qr img {
+            width: 350px;
+            height: 400px;
             border-radius: 10px;
             background: #fff;
             padding: 5px;
         }
-        .gcash-actions {
+        .maya-actions {
             display: flex;
             justify-content: space-between;
             margin-top: 30px;
         }
-        .gcash-actions button {
+        .maya-actions button {
             width: 48%;
             border-radius: 10px;
             font-weight: bold;
@@ -64,27 +64,29 @@
             background: #fff;
             color: #0077c5;
             border: none;
+            height: 30px;
         }
         .confirm-btn {
             background: #1C8D20;
             color: #fff;
             border: none;
+            height: 30px;
         }
     </style>
 </head>
 <body>
-    <div class="gcash-container">
-        <img src="" alt="GCash Logo" class="gcash-logo">
-        <div class="gcash-details">
-            <div class="gcash-info">
-                <h4>TechEase</h4>
-                <p>09959470501</p>
+    <div class="maya-container">
+        <img src="assets/mayalogo.png" alt="Maya logo" class="maya-logo">
+        <div class="maya-details">
+            <div class="maya-info">
+                <h1 style="font-size: 80px;">TechEase</h1>
+                <p style="font-size: 40px;">09959470501</p>
             </div>
-            <div class="gcash-qr">
-                <img src="" alt="GCash QR">
+            <div class="maya-qr">
+                <img src="assets/qrmaya.png" alt="Maya QR">
             </div>
         </div>
-        <div class="gcash-actions">
+        <div class="maya-actions">
             <button class="cancel-btn" onclick="window.history.back()">Cancel</button>
             <button class="confirm-btn" onclick="alert('Payment Confirmed!')">Confirm</button>
         </div>

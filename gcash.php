@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/gcash.css">
     <title>GCASH PAYMENT</title>
-    <link href="" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #e6f0fa;
@@ -27,7 +27,8 @@
         .gcash-logo {
             display: block;
             margin: 0 auto 20px auto;
-            width: 80px;
+            height: 180px;
+            width: 350px;
         }
         .gcash-details {
             display: flex;
@@ -74,11 +75,11 @@
 </head>
 <body>
     <div class="gcash-container">
-        <img src="" alt="GCash Logo" class="gcash-logo">
+        <img src="assets/gcashlogo.png" alt="GCash Logo" class="gcash-logo">
         <div class="gcash-details">
             <div class="gcash-info">
-                <h4>TechEase</h4>
-                <p>09959470501</p>
+                <h2>TechEase</h>
+                <h1><p>09959470501</p></h1>
             </div>
             <div class="gcash-qr">
                 <img src="" alt="GCash QR">

@@ -214,7 +214,16 @@ h6 {
     </style>
 </head>
 <body>
-    <div class="header"></div>
+    <!-- Add this just after <body> and before your .container -->
+<nav class="navbar navbar-expand-lg" style="background-color: #2c6ea3; height: 70px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="#">TechEase</a>
+    <div class="ms-auto">
+      <a href="product.php" class="btn btn-light" style="font-weight: 500; margin-right: 10px;">Products</a>
+    </div>
+  </div>
+</nav>
+    
     <div class="container mt-4">
         <div class="row g-3">
            
@@ -565,16 +574,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btn.textContent.trim() === 'Mode of Payment') {
         btn.addEventListener('click', function() {
             // Show payment options
-            const choice = prompt('Select mode of payment:\n1. Cash (default)\n2. Gcash\n3. Maya\n\nType 1 or 2 or 3:');
+            const choice = prompt('Select mode of payment:\n1. Cash (default)\n2. GCash\n3. Maya\n\nType 1, 2, or 3:');
             if (choice === '2') {
-                window.location.href = 'gcash.php'; // Open another PHP page for "Later"
+                window.location.href = 'gcash.php'; // Redirect to GCash page
+            } else if (choice === '3') {
+                window.location.href = 'maya.php'; // Redirect to Maya page
+            } else if (choice === '1' || choice === null || choice === '') {
+                // Do nothing, stay on Cash (default)
+            } else {
+                alert('Invalid choice. Please select 1, 2, or 3.');
             }
-            else if (choice === '3') {
-                window.location.href = 'maya.php'; // Open another PHP page for "Later"
-            }else
-            alert('Invalid choice. Please select 1, 2, or 3.');
-
-            // If "1" (Cash), do nothing (default POS behavior)
         });
     }
     if (btn.textContent.trim() === 'Clear All') {

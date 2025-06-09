@@ -97,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="container mt-4">
             <div class="col-lg-4">
                 <div class="tab-container">
-                    <div class="Exit-button">X</div>
+                    <div class="Exit-button"><a href="product.php">X</a></div>
                     <form method="POST" action="addProducts.php">
                         <div class="Product-name">Product Name:
                             <input type="text" name="product_name" required>

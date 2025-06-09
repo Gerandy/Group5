@@ -63,13 +63,13 @@
         }
         .cancel-btn {
             background: #fff;
-            color: #0077c5;
+            color:rgb(47, 242, 158);
             border: none;
             height: 30px;
         }
         .confirm-btn {
-            background: #1C8D20;
-            color: #fff;
+            background: #fff;
+            color: rgb(47, 242, 158);
             border: none;
             height: 30px;
         }

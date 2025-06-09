@@ -1,3 +1,23 @@
+<?php 
+include ('db/database.php'); 
+session_start()
+?>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $product_name = mysqli_real_escape_string($connection, $_POST['product_name']);
+    $brand = mysqli_real_escape_string($connection, $_POST['brand']);
+    $stock = mysqli_real_escape_string($connection, $_POST['stock_left']);
+    $price = mysqli_real_escape_string($connection, $_POST['price']);
+
+    $insert_sql = "INSERT INTO products (product_name, brand, stock_left, price) VALUES ('$product_name', '$brand', '$stock', '$price')";
+    if (mysqli_query($connection, $insert_sql)) {
+        $message = "Product added successfully!";
+    } else {
+        $message = "Error: " . mysqli_error($connection);
+    } 
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,30 +81,38 @@
             font-weight: bold;
             padding: 5px;
             margin: auto;
-            margin-top: 15%;
+            margin-top: 10%;
+            display: block;
         }
 
     </style>
 </head>
 <body>
+<?php if (!empty($message)) { ?>
+    <script>
+        alert("<?php echo addslashes($message); ?>");
+    </script>
+<?php } ?>
     <div class="header"></div>
         <div class="container mt-4">
             <div class="col-lg-4">
                 <div class="tab-container">
                     <div class="Exit-button">X</div>
-                    <div class="Product-name">Product Name:
-                        <input type="text">
-                    </div>
-                    <div class="input-class">Brand:
-                        <input type="text">
-                    </div>
-                    <div class="input-class">Stock:
-                        <input type="text">
-                    </div>
-                    <div class="input-class">Price:
-                        <input type="text">
-                    </div>
-                    <div class="Confirm-button">Confirm</div>
+                    <form method="POST" action="addProducts.php">
+                        <div class="Product-name">Product Name:
+                            <input type="text" name="product_name" required>
+                        </div>
+                        <div class="input-class">Brand:
+                            <input type="text" name="brand" required>
+                        </div>
+                        <div class="input-class">Stock:
+                            <input type="number" name="stock_left" required>
+                        </div>
+                        <div class="input-class">Price:
+                            <input type="number" name="price" required>
+                        </div>
+                        <button type="submit" class="Confirm-button">Confirm</button>
+                    </form>
                 </div>
             </div>
         </div>

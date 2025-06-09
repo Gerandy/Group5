@@ -1,3 +1,21 @@
+<?php 
+include ('db/database.php'); 
+session_start()
+?>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $customer_name = mysqli_real_escape_string($connection, $_POST['name']);
+    $contact_number = mysqli_real_escape_string($connection, $_POST['contact']);
+
+    $insert_sql = "INSERT INTO customer (name, contact) VALUES ('$customer_name', '$contact_number')";
+    if (mysqli_query($connection, $insert_sql)) {
+        $message = "Customer added successfully!";
+    } else {
+        $message = "Error: " . mysqli_error($connection);
+    } 
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,21 +78,28 @@
     </style>
 </head>
 <body>
+<?php if (!empty($message)) { ?>
+    <script>
+        alert("<?php echo addslashes($message); ?>");
+    </script>
+<?php } ?>
     <div class="header"></div>
         <div class="container mt-4">
             <div class="col-lg-4">
                 <div class="tab-container">
                     <div class="Exit-button">X</div>
+                    <form method="POST" action="addCustomer.php">
                     <div class="Customer-name">Customer Name:
-                        <input type="text">
+                        <input type="text" name="name" required>
                     </div>
                     <div class="Contact-Num">Contact Number:
-                        <input type="text">
+                        <input type="text" name="contact" required maxlength="11" pattern="[0-9]{11}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11);" >
                     </div>
-                    <div class="Confirm-button">Confirm</div>
+                    <button type="submit" class="Confirm-button">Confirm</div>
+                    </form>
                 </div>
             </div>
         </div>
-    
+
 </body>
 </html>

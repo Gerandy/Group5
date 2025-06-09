@@ -15,5 +15,111 @@
         "change": 0,
         "id": "txn_68470b1ab2412",
         "datetime": "2025-06-09 18:26:02"
+    },
+    {
+        "cart": [
+            {
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 50000,
+        "change": 0,
+        "id": "txn_68470e63a0bf5",
+        "datetime": "2025-06-09 18:40:03"
+    },
+    {
+        "cart": [
+            {
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 50000,
+        "change": 0,
+        "id": "txn_68470ee54ec7e",
+        "datetime": "2025-06-09 18:42:13"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 50000,
+        "change": 0,
+        "id": "txn_68470f686b938",
+        "datetime": "2025-06-09 18:44:24"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 4
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 50000,
+        "change": 0,
+        "id": "txn_6847102b8de39",
+        "datetime": "2025-06-09 18:47:39"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 3
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 50000,
+        "change": 0,
+        "id": "txn_6847108674ff9",
+        "datetime": "2025-06-09 18:49:10"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 2
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 50000,
+        "change": 0,
+        "id": "txn_6847111f6531d",
+        "datetime": "2025-06-09 18:51:43"
     }
 ]

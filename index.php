@@ -346,11 +346,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } else {
                 cart[productId] = {
-                    name: name,
-                    price: price,
-                    quantity: 1,
-                    stock: stock
-                };
+    id: productId, // <-- add this line
+    name: name,
+    price: price,
+    quantity: 1,
+    stock: stock
+};
             }
             renderCart();
         });
@@ -453,11 +454,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const doc = new jsPDF({
             orientation: 'p',
             unit: 'mm',
-            format: [90, 120 + Object.keys(cart).length * 8] // Receipt width, dynamic height
+            format: [90, 120 + Object.keys(cart).length * 8]
         });
 
         let y = 10;
-        
         doc.setFontSize(14);
         doc.text('TECHEASE', 45, y, { align: 'center' });
         y += 6;
@@ -466,57 +466,53 @@ document.addEventListener('DOMContentLoaded', function() {
         y += 5;
         doc.text('Tel: 09927274046', 45, y, { align: 'center' });
         y += 8;
-
-        // Receipt Title
         doc.setFontSize(12);
         doc.text('SALES RECEIPT', 45, y, { align: 'center' });
         y += 8;
-
-        // Date/Time
         doc.setFontSize(9);
         doc.text('Date: ' + new Date().toLocaleString(), 5, y);
         y += 6;
-
-        // Table Header
         doc.setFontSize(10);
         doc.text('Item', 5, y);
         doc.text('Qty', 45, y, { align: 'center' });
         doc.text('Price', 75, y, { align: 'right' });
-        y += 6; // More space after header
-
-        // Items
+        y += 6;
         doc.setLineWidth(0.1);
-        doc.line(5, y - 5, 75, y - 5); // Line under header
+        doc.line(5, y - 5, 75, y - 5);
 
         Object.values(cart).forEach(item => {
             doc.setFontSize(9);
             doc.text(item.name, 5, y);
             doc.text(String(item.quantity), 40, y, { align: 'center' });
             doc.text((item.price * item.quantity).toLocaleString(), 75, y, { align: 'right' });
-            y += 6; // More space between items
+            y += 6;
         });
 
-        doc.line(5, y - 2, 75, y - 2); // Line after items
+        doc.line(5, y - 2, 75, y - 2);
         y += 4;
 
-        // Totals
         doc.setFontSize(10);
-        // Calculate subtotal before discount
         let subtotal = 0;
         Object.values(cart).forEach(item => { subtotal += item.price * item.quantity; });
 
         fetch('log_transaction.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        cart: Object.values(cart),
-        subtotal: subtotal,
-        discount: discountPercent,
-        total: total,
-        pay: pay,
-        change: change
-    })
-});
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                cart: Object.values(cart),
+                subtotal: subtotal,
+                discount: discountPercent,
+                total: total,
+                pay: pay,
+                change: change
+            })
+        });
+
+        fetch('update_stock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Object.values(cart))
+        });
 
         doc.text('Subtotal:', 5, y);
         doc.text(subtotal.toLocaleString(), 75, y, { align: 'right' });
@@ -535,12 +531,19 @@ document.addEventListener('DOMContentLoaded', function() {
         doc.text('CHANGE:', 5, y);
         doc.text(change.toLocaleString(), 75, y, { align: 'right' });
         y += 8;
-
-        // Footer
         doc.setFontSize(9);
         doc.text('Thank you for shopping!', 40, y, { align: 'center' });
 
         doc.save('receipt.pdf');
+
+        // Clear cart after printing and update UI
+        for (let key in cart) delete cart[key];
+        renderCart();
+
+        // Reload the page to update product stock display
+        setTimeout(() => {
+            location.reload();
+        }, 500); // slight delay to ensure everything finishes
     });
 
     // SEARCH BAR FUNCTIONALITY
@@ -595,6 +598,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 });
+
+function reloadProductTable() {
+    fetch('product_table.php')
+        .then(response => response.text())
+        .then(html => {
+            document.querySelector('.product-table').innerHTML = html;
+            // Re-attach add-to-cart event listeners
+            document.querySelectorAll('.addbutton').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const productId = this.getAttribute('data-product-id');
+                    const name = row.children[0].textContent;
+                    const stock = parseInt(row.children[2].textContent);
+                    const price = parseFloat(row.children[3].textContent.replace(/[^\d.]/g, ''));
+                    if (cart[productId]) {
+                        if (cart[productId].quantity < cart[productId].stock) {
+                            cart[productId].quantity += 1;
+                        } else {
+                            alert('Cannot add more than available stock!');
+                        }
+                    } else {
+                        cart[productId] = {
+                            id: productId,
+                            name: name,
+                            price: price,
+                            quantity: 1,
+                            stock: stock
+                        };
+                    }
+                    renderCart();
+                });
+            });
+        });
+}
 </script>
 </body>
 </html>

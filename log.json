@@ -121,5 +121,23 @@
         "change": 0,
         "id": "txn_6847111f6531d",
         "datetime": "2025-06-09 18:51:43"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 100000,
+        "change": 50000,
+        "id": "txn_68471f6bcb0ea",
+        "datetime": "2025-06-09 19:52:43"
     }
 ]

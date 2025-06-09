@@ -88,34 +88,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg" style="background-color: #2c6ea3; height: 70px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="index.php">TechEase</a>
+    <div class="ms-auto">
+      <a href="add_customer.php" class="btn btn-light me-2" style="font-weight: 500;">Add Customer</a>
+      <a href="product.php" class="btn btn-light" style="font-weight: 500;">Product Page</a>
+    </div>
+  </div>
+</nav>
 <?php if (!empty($message)) { ?>
     <script>
         alert("<?php echo addslashes($message); ?>");
     </script>
 <?php } ?>
-    <div class="header"></div>
-        <div class="container mt-4">
-            <div class="col-lg-4">
-                <div class="tab-container">
-                    <div class="Exit-button"><a href="product.php">X</a></div>
-                    <form method="POST" action="addProducts.php">
-                        <div class="Product-name">Product Name:
-                            <input type="text" name="product_name" required>
-                        </div>
-                        <div class="input-class">Brand:
-                            <input type="text" name="brand" required>
-                        </div>
-                        <div class="input-class">Stock:
-                            <input type="number" name="stock_left" required>
-                        </div>
-                        <div class="input-class">Price:
-                            <input type="number" name="price" required>
-                        </div>
-                        <button type="submit" class="Confirm-button">Confirm</button>
-                    </form>
-                </div>
+    <div class="container mt-4">
+        <div class="col-lg-4">
+            <div class="tab-container">
+                <div class="Exit-button"><a href="product.php">X</a></div>
+                <form method="POST" action="addProducts.php">
+                    <div class="Product-name">Product Name:
+                        <input type="text" name="product_name" required>
+                    </div>
+                    <div class="input-class">Brand:
+                        <input type="text" name="brand" required>
+                    </div>
+                    <div class="input-class">Stock:
+                        <input type="number" name="stock_left" required>
+                    </div>
+                    <div class="input-class">Price:
+                        <input type="number" name="price" required>
+                    </div>
+                    <button type="submit" class="Confirm-button">Confirm</button>
+                </form>
             </div>
         </div>
-    
+    </div>
 </body>
 </html>

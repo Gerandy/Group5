@@ -36,6 +36,7 @@
         }
         .maya-info {
             flex: 1;
+            margin-left: 90px;
         } 
         .maya-info h4, .maya-info p {
             margin: 0;

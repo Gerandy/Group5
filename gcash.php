@@ -81,7 +81,7 @@
         <div class="gcash-details">
             <div class="gcash-info">
                 <h1 style="font-size: 80px;">TechEase</h1>
-                <p style="font-size: 40px;">09959470501</p>
+                <p style="font-size: 40px;">09927274046</p>
             </div>
             <div class="gcash-qr">
                 <img src="assets/qrgcash.png" alt="Gcash QR">

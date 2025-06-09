@@ -106,10 +106,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <input type="text" name="brand" required>
                         </div>
                         <div class="input-class">Stock:
-                            <input type="text" name="stock_left" required>
+                            <input type="number" name="stock_left" required>
                         </div>
                         <div class="input-class">Price:
-                            <input type="text" name="price" required>
+                            <input type="number" name="price" required>
                         </div>
                         <button type="submit" class="Confirm-button">Confirm</button>
                     </form>

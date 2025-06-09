@@ -139,5 +139,92 @@
         "change": 50000,
         "id": "txn_68471f6bcb0ea",
         "datetime": "2025-06-09 19:52:43"
+    },
+    {
+        "cart": [],
+        "subtotal": 0,
+        "discount": 0,
+        "total": 0,
+        "pay": 0,
+        "change": 0,
+        "id": "txn_684731de20b91",
+        "datetime": "2025-06-09 21:11:26"
+    },
+    {
+        "cart": [
+            {
+                "id": "3",
+                "name": "uber",
+                "price": 5500,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 5500,
+        "discount": 0,
+        "total": 5500,
+        "pay": 5555,
+        "change": 55,
+        "id": "txn_684732296905d",
+        "datetime": "2025-06-09 21:12:41"
+    },
+    {
+        "cart": [],
+        "subtotal": 0,
+        "discount": 0,
+        "total": 0,
+        "pay": 0,
+        "change": 0,
+        "id": "txn_684732335ff5a",
+        "datetime": "2025-06-09 21:12:51"
+    },
+    {
+        "cart": [],
+        "subtotal": 0,
+        "discount": 0,
+        "total": 0,
+        "pay": 0,
+        "change": 0,
+        "id": "txn_68473284274e3",
+        "datetime": "2025-06-09 21:14:12"
+    },
+    {
+        "cart": [],
+        "subtotal": 0,
+        "discount": 0,
+        "total": 0,
+        "pay": 0,
+        "change": 0,
+        "id": "txn_684732d0c99e5",
+        "datetime": "2025-06-09 21:15:28"
+    },
+    {
+        "cart": [],
+        "subtotal": 0,
+        "discount": 0,
+        "total": 0,
+        "pay": 0,
+        "change": 0,
+        "payment_method": "GCash",
+        "id": "txn_684733366e850",
+        "datetime": "2025-06-09 21:17:10"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 50000,
+                "quantity": 1,
+                "stock": 1
+            }
+        ],
+        "subtotal": 50000,
+        "discount": 0,
+        "total": 50000,
+        "pay": 50000,
+        "change": 0,
+        "id": "txn_6847334f5c625",
+        "datetime": "2025-06-09 21:17:35"
     }
 ]

@@ -573,6 +573,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pos-buttons button').forEach(btn => {
     if (btn.textContent.trim() === 'Mode of Payment') {
         btn.addEventListener('click', function() {
+            // Prevent payment selection if cart is empty
+            if (Object.keys(cart).length === 0) {
+                alert('Cart is empty. Please add items before selecting a mode of payment.');
+                return;
+            }
             // Show payment options
             const choice = prompt('Select mode of payment:\n1. Cash (default)\n2. GCash\n3. Maya\n\nType 1, 2, or 3:');
             if (choice === '2') {

@@ -183,7 +183,7 @@
                                         echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
                                         echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
                                         echo '<td>' . htmlspecialchars($row['price']) . '</td>';
-                                        echo '<td><a href="edit_product.php?id=' . htmlspecialchars($row['id']) . '" class="addbutton btn btn-secondary btn-sm">Edit</a></td>';
+                                        echo '<td><a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" class="addbutton btn btn-secondary btn-sm">Edit</a></td>';
                                         echo '</tr>';
                                     }
                                 } else {

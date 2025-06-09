@@ -100,29 +100,45 @@
   </style>
 </head>
 
+<?php
+include('db/database.php');
+$product = [
+    'product_name' => '',
+    'brand' => '',
+    'stock_left' => '',
+    'price' => ''
+];
+
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $result = mysqli_query($connection, "SELECT * FROM products WHERE id = $id");
+    if ($result && mysqli_num_rows($result) > 0) {
+        $product = mysqli_fetch_assoc($result);
+    }
+}
+?>
+
 <div class="header"></div>
 <div class="container mt-4">
     <div class="col-lg-4">
         <div class="tab-container">
             <div class="Exit-button">X</div>
-            <div class="Product-name">Product Name:
-                <input type="text">
-            </div>
-            <div class="Contact-Num">Brand:
-                <input type="text">
-            </div>
-            <div class="Contact-Num">Stock:
-                <input type="text">
-            </div>
-            <div class="Contact-Num">Price:
-                <input type="text">
-            </div>
-      <div class="d-flex justify-content-between">
-        <button type="button" class="btn btn-remove">Remove</button>
-        <button type="submit" class="btn btn-confirm">Confirm</button>
-      </div>
-    </form>
-  </div>
+            <form method="POST" action="editProduct.php?id=<?php echo htmlspecialchars($_GET['id']); ?>">
+                <div class="Product-name">Product Name:
+                    <input type="text" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>" required>
+                </div>
+                <div class="input-class">Brand:
+                    <input type="text" name="brand" value="<?php echo htmlspecialchars($product['brand']); ?>" required>
+                </div>
+                <div class="input-class">Stock:
+                    <input type="number" name="stock_left" value="<?php echo htmlspecialchars($product['stock_left']); ?>" required>
+                </div>
+                <div class="input-class">Price:
+                    <input type="number" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" required>
+                </div>
+                <button type="submit" class="Confirm-button">Update</button>
+            </form>
+          </div>
 
 </body>
 </html>

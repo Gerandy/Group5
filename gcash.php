@@ -7,71 +7,125 @@
     <link href="css/gcash.css">
     <title>GCASH PAYMENT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #e6f0fa;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+<style>
+    body {
+        background-color: #e6f0fa;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .gcash-container {
+        background-color: rgb(0, 114, 190);
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 800px;
+        min-width: 350px;
+        padding: 10px 30px 30px 30px; 
+        color: #fff;
+        position: relative;
+        box-sizing: border-box;
+    }
+    .gcash-logo {
+        display: block;
+        margin: 0 auto 10px auto; 
+        width: 100%;
+        max-width: 300px; 
+        height: auto;
+    }
+    .gcash-details {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px; 
+    }
+    .gcash-info {
+        flex: 2 1 300px;
+        min-width: 200px;
+        margin-left: 60px;             
+    }
+    .gcash-info h2 {
+        margin: 0 0 10px 0;
+        word-break: break-all;
+        font-size: 2.5rem;
+        letter-spacing: 1px;
+        font-weight: bold;
+    }
+    .gcash-info p {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+    .gcash-qr {
+        margin-left: 20px; 
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .gcash-qr img {
+        width: 320px;   
+        height: 320px;
+        max-width: 40vw;
+        border-radius: 10px;
+        background: #fff;
+        padding: 10px;
+        display: block;
+        
+    }
+    .gcash-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+        gap: 20px;
+    }
+    .gcash-actions button {
+        width: 48%;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1.2rem;
+        padding: 12px 0;
+    }
+    .cancel-btn {
+        background: #fff;
+        color: #0077c5;
+        border: none;
+    }
+    .confirm-btn {
+        background: #fff;
+        color: #0077c5;
+        border: none;
+    }
+    @media (max-width: 900px) {
         .gcash-container {
-            background-color:rgb(0, 114, 190);
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            width: 400px;
-            padding: 30px 30px 20px 30px;
-            color: #fff;
-            position: relative;
-        }
-        .gcash-logo {
-            display: block;
-            margin: 0 auto 20px auto;
-            height: 180px;
-            width: 350px;
+            max-width: 98vw;
+            padding: 15px 5px;
         }
         .gcash-details {
-            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-        }
-        .gcash-info {
-            flex: 1;
-        }
-        .gcash-info h4, .gcash-info p {
-            margin: 0;
+            gap: 10px;
         }
         .gcash-qr {
-            margin-left: 20px;
+            margin-left: 0;
+            margin-top: 10px;
+            width: 100%;
         }
         .gcash-qr img {
-            width: 90px;
-            height: 90px;
-            border-radius: 10px;
-            background: #fff;
-            padding: 5px;
+            width: 100%;
+            max-width: 90vw;
+            height: auto;
         }
-        .gcash-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
+        .gcash-info h2 {
+            font-size: 2rem;
         }
-        .gcash-actions button {
-            width: 48%;
-            border-radius: 10px;
-            font-weight: bold;
+        .gcash-info p {
+            font-size: 1.2rem;
         }
-        .cancel-btn {
-            background: #fff;
-            color: #0077c5;
-            border: none;
-        }
-        .confirm-btn {
-            background: #1C8D20;
-            color: #fff;
-            border: none;
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="gcash-container">
@@ -79,10 +133,10 @@
         <div class="gcash-details">
             <div class="gcash-info">
                 <h2>TechEase</h>
-                <h1><p>09959470501</p></h1>
+                <p>09959470501</p>
             </div>
             <div class="gcash-qr">
-                <img src="" alt="GCash QR">
+                <img src="assets/qrgcash.png" alt="GCash QR">
             </div>
         </div>
         <div class="gcash-actions">

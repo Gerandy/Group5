@@ -36,6 +36,7 @@
         }
         .maya-info {
             flex: 1;
+            margin-left: 90px;
         } 
         .maya-info h4, .maya-info p {
             margin: 0;
@@ -62,13 +63,13 @@
         }
         .cancel-btn {
             background: #fff;
-            color: #0077c5;
+            color:rgb(47, 242, 158);
             border: none;
             height: 30px;
         }
         .confirm-btn {
-            background: #1C8D20;
-            color: #fff;
+            background: #fff;
+            color: rgb(47, 242, 158);
             border: none;
             height: 30px;
         }
@@ -80,7 +81,7 @@
         <div class="maya-details">
             <div class="maya-info">
                 <h1 style="font-size: 80px;">TechEase</h1>
-                <p style="font-size: 40px;">09959470501</p>
+                <p style="font-size: 40px;">09927274046</p>
             </div>
             <div class="maya-qr">
                 <img src="assets/qrmaya.png" alt="Maya QR">

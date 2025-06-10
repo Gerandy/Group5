@@ -255,5 +255,302 @@
         "change": 12262123,
         "id": "txn_6847359141a04",
         "datetime": "2025-06-09 21:27:13"
+    },
+    {
+        "cart": [],
+        "subtotal": 0,
+        "discount": 0,
+        "total": 0,
+        "pay": 0,
+        "change": 0,
+        "payment_method": "GCash",
+        "id": "txn_6847995bb69ef",
+        "datetime": "2025-06-10 04:32:59"
+    },
+    {
+        "cart": [
+            {
+                "id": "2",
+                "name": "rtx",
+                "price": 40000,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 40000,
+        "discount": 0,
+        "total": 40000,
+        "pay": 55555,
+        "change": 15555,
+        "id": "txn_684799926dffd",
+        "datetime": "2025-06-10 04:33:54"
+    },
+    {
+        "cart": [
+            {
+                "id": "2",
+                "name": "rtx",
+                "price": 40000,
+                "quantity": 1,
+                "stock": 4
+            }
+        ],
+        "subtotal": 40000,
+        "discount": 0,
+        "total": 40000,
+        "pay": 55555,
+        "change": 15555,
+        "id": "txn_684799e57515c",
+        "datetime": "2025-06-10 04:35:17"
+    },
+    {
+        "cart": [],
+        "subtotal": 0,
+        "discount": 0,
+        "total": 0,
+        "pay": 0,
+        "change": 0,
+        "payment_method": "GCash",
+        "id": "txn_68479a3ead0ae",
+        "datetime": "2025-06-10 04:36:46"
+    },
+    {
+        "cart": [],
+        "subtotal": 0,
+        "discount": 0,
+        "total": 0,
+        "pay": 0,
+        "change": 0,
+        "payment_method": "GCash",
+        "id": "txn_68479b17a03f3",
+        "datetime": "2025-06-10 04:40:23"
+    },
+    {
+        "cart": [
+            {
+                "id": "2",
+                "name": "rtx",
+                "price": 40000,
+                "quantity": 1,
+                "stock": 3
+            }
+        ],
+        "subtotal": 40000,
+        "discount": 0,
+        "total": 40000,
+        "pay": 0,
+        "change": -40000,
+        "payment_method": "GCash",
+        "id": "txn_68479c2719590",
+        "datetime": "2025-06-10 04:44:55"
+    },
+    {
+        "cart": [
+            {
+                "id": "2",
+                "name": "rtx",
+                "price": 40000,
+                "quantity": 1,
+                "stock": 2
+            }
+        ],
+        "subtotal": 40000,
+        "discount": 0,
+        "total": 40000,
+        "pay": 0,
+        "change": -40000,
+        "payment_method": "GCash",
+        "id": "txn_68479c2f9b65d",
+        "datetime": "2025-06-10 04:45:03"
+    },
+    {
+        "cart": [
+            {
+                "id": "2",
+                "name": "rtx",
+                "price": 40000,
+                "quantity": 1,
+                "stock": 1
+            }
+        ],
+        "subtotal": 40000,
+        "discount": 0,
+        "total": 40000,
+        "pay": "0",
+        "change": -40000,
+        "payment_method": "GCash",
+        "id": "txn_68479c9c3b3d9",
+        "datetime": "2025-06-10 04:46:52"
+    },
+    {
+        "cart": [
+            {
+                "id": "3",
+                "name": "uber",
+                "price": 5500,
+                "quantity": 1,
+                "stock": 4
+            }
+        ],
+        "subtotal": 5500,
+        "discount": 0,
+        "total": 5500,
+        "pay": "0",
+        "change": -5500,
+        "payment_method": "GCash",
+        "id": "txn_68479cb9858d7",
+        "datetime": "2025-06-10 04:47:21"
+    },
+    {
+        "cart": [
+            {
+                "id": "3",
+                "name": "uber",
+                "price": 5500,
+                "quantity": 1,
+                "stock": 3
+            }
+        ],
+        "subtotal": 5500,
+        "discount": 0,
+        "total": 5500,
+        "pay": "0",
+        "change": -5500,
+        "payment_method": "GCash",
+        "id": "txn_68479cfb7ccb6",
+        "datetime": "2025-06-10 04:48:27"
+    },
+    {
+        "cart": [
+            {
+                "id": "3",
+                "name": "uber",
+                "price": 5500,
+                "quantity": 1,
+                "stock": 2
+            }
+        ],
+        "subtotal": 5500,
+        "discount": 0,
+        "total": 5500,
+        "pay": "5500",
+        "change": 0,
+        "payment_method": "GCash",
+        "id": "txn_68479d466427c",
+        "datetime": "2025-06-10 04:49:42"
+    },
+    {
+        "cart": [
+            {
+                "id": "3",
+                "name": "uber",
+                "price": 5500,
+                "quantity": 1,
+                "stock": 1
+            }
+        ],
+        "subtotal": 5500,
+        "discount": 0,
+        "total": 5500,
+        "pay": "5500",
+        "change": 0,
+        "payment_method": "GCash",
+        "id": "txn_68479d922f16f",
+        "datetime": "2025-06-10 04:50:58"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 5000,
+                "quantity": 1,
+                "stock": 6
+            }
+        ],
+        "subtotal": 5000,
+        "discount": 0,
+        "total": 5000,
+        "pay": "0",
+        "change": -5000,
+        "payment_method": "Maya",
+        "id": "txn_68479df43e3ec",
+        "datetime": "2025-06-10 04:52:36"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 5000,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 5000,
+        "discount": 0,
+        "total": 5000,
+        "pay": "0",
+        "change": -5000,
+        "payment_method": "Maya",
+        "id": "txn_68479dfac256e",
+        "datetime": "2025-06-10 04:52:42"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 5000,
+                "quantity": 1,
+                "stock": 4
+            }
+        ],
+        "subtotal": 5000,
+        "discount": 0,
+        "total": 5000,
+        "pay": "5000",
+        "change": 0,
+        "payment_method": "Maya",
+        "id": "txn_68479e31c9db1",
+        "datetime": "2025-06-10 04:53:37"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 5000,
+                "quantity": 1,
+                "stock": 3
+            }
+        ],
+        "subtotal": 5000,
+        "discount": 0,
+        "total": 5000,
+        "pay": "5000",
+        "change": 0,
+        "payment_method": "Maya",
+        "id": "txn_68479ec7e976e",
+        "datetime": "2025-06-10 04:56:07"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "gtx",
+                "price": 5000,
+                "quantity": 1,
+                "stock": 2
+            }
+        ],
+        "subtotal": 5000,
+        "discount": 0,
+        "total": 5000,
+        "pay": "5000",
+        "change": 0,
+        "payment_method": "Maya",
+        "id": "txn_68479f39e1888",
+        "datetime": "2025-06-10 04:58:01"
     }
 ]

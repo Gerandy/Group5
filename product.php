@@ -202,7 +202,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Simple search filter for the table
+    
     document.querySelector('.searchbar').addEventListener('input', function() {
         const value = this.value.toLowerCase();
         document.querySelectorAll('.product-table tbody tr').forEach(function(row) {

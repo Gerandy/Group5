@@ -12,6 +12,16 @@ if (file_exists($logFile)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<nav class="navbar navbar-expand-lg" style="background-color: #2c6ea3; height: 70px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="index.php">TechEase</a>
+    <div class="ms-auto">
+      <a href="index.php" class="btn btn-light me-2" style="font-weight: 500;">Home</a>
+      <a href="product.php" class="btn btn-light me-2" style="font-weight: 500;">Products</a>
+      <a href="log.php" class="btn btn-light" style="font-weight: 500;">Transaction History</a>
+    </div>
+  </div>
+</nav>
 <div class="container mt-4">
     <h2>Transaction Logs</h2>
     <table class="table table-bordered">

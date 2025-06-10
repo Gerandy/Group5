@@ -86,6 +86,9 @@
                 <img src="assets/qrmaya.png" alt="Maya QR">
             </div>
         </div>
+        <div class="maya-total" style="text-align:center; margin-top:30px;">
+            <h2 style="color:#fff;">Total to Pay: <span id="maya-total-amount"></span></h2>
+        </div>
         <div class="maya-actions">
             <button class="cancel-btn" onclick="window.history.back()">Cancel</button>
             <button class="confirm-btn" id="maya-confirm-btn">Confirm & Print Receipt</button>
@@ -97,14 +100,26 @@
 // Replace this with your actual cart retrieval logic
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let discountPercent = parseFloat(localStorage.getItem('discountPercent')) || 0;
-let pay = parseFloat(localStorage.getItem('pay')) || 0;
+let pay = localStorage.getItem('pay') || '0'; // get as string
+
+// Display the exact pay amount for the user (add this after your QR code in HTML)
+if (document.getElementById('maya-total-amount')) {
+    document.getElementById('maya-total-amount').textContent = '₱' + Number(pay).toLocaleString();
+}
+
+// If you don't have the display yet, add this in your HTML after the QR code:
+/*
+<div class="maya-total" style="text-align:center; margin-top:30px;">
+    <h2 style="color:#fff;">Total to Pay: <span id="maya-total-amount"></span></h2>
+</div>
+*/
 
 document.getElementById('maya-confirm-btn').addEventListener('click', async function() {
     // Calculate totals
     let subtotal = 0;
     cart.forEach(item => { subtotal += item.price * item.quantity; });
     let total = subtotal - (subtotal * (discountPercent / 100));
-    let change = pay - total;
+    let change = Number(pay) - total;
 
     // Generate PDF Receipt
     const { jsPDF } = window.jspdf;
@@ -161,7 +176,7 @@ document.getElementById('maya-confirm-btn').addEventListener('click', async func
     doc.text(total.toLocaleString(), 75, y, { align: 'right' });
     y += 5;
     doc.text('PAY:', 5, y);
-    doc.text(pay.toLocaleString(), 75, y, { align: 'right' });
+    doc.text(Number(pay).toLocaleString(), 75, y, { align: 'right' }); // show exact pay
     y += 5;
     doc.text('CHANGE:', 5, y);
     doc.text(change.toLocaleString(), 75, y, { align: 'right' });
@@ -180,13 +195,14 @@ document.getElementById('maya-confirm-btn').addEventListener('click', async func
             subtotal: subtotal,
             discount: discountPercent,
             total: total,
-            pay: pay,
-            change: change
+            pay: pay, // exact user input as string
+            change: change,
+            payment_method: 'Maya'
         })
     });
 
-    // Update stock in database and wait for it to finish
-    await fetch('update_stock.php', {
+    // Update stock in database
+    fetch('update_stock.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cart)

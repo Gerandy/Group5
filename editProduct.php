@@ -10,7 +10,7 @@ $message = '';
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
-    // Handle form submission
+ 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = mysqli_real_escape_string($connection, $_POST['product_name']);
         $brand = mysqli_real_escape_string($connection, $_POST['brand']);
@@ -19,14 +19,14 @@ if (isset($_GET['id'])) {
         $update = mysqli_query($connection, "UPDATE products SET product_name='$name', brand='$brand', stock_left=$stock, price=$price WHERE id=$id");
         if ($update) {
             $message = "Product updated successfully!";
-            // Optionally redirect to product page after update
+            
             echo "<script>alert('Product updated successfully!');window.location.href='product.php';</script>";
             exit;
         } else {
             $message = "Failed to update product.";
         }
     }
-    // Fetch product data for form
+   
     $result = mysqli_query($connection, "SELECT * FROM products WHERE id = $id");
     if ($result && mysqli_num_rows($result) > 0) {
         $product = mysqli_fetch_assoc($result);

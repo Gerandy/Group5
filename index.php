@@ -220,6 +220,7 @@ h6 {
     <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="#">TechEase</a>
     <div class="ms-auto">
       <a href="product.php" class="btn btn-light" style="font-weight: 500; margin-right: 10px;">Products</a>
+      <a href="log.php" class="btn btn-light" style="font-weight: 500; margin-right: 10px;">Transaction History</a>
     </div>
   </div>
 </nav>
@@ -239,7 +240,7 @@ h6 {
     <?php
     
 
-    // Fetch products
+
                             
 
                         $query = "SELECT * FROM products";
@@ -335,7 +336,7 @@ h6 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Store cart items in a JS object
+
     const cart = {};
     let discountPercent = 0;
 
@@ -376,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
         Object.values(cart).forEach(item => {
             total += item.price * item.quantity;
         });
-        // Apply discount if any
+
         if (discountPercent > 0) {
             total = total - (total * (discountPercent / 100));
         }
@@ -406,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
 `;
         });
 
-        // Add event listeners for + and - buttons
+
         document.querySelectorAll('.btn-increase').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 const id = this.getAttribute('data-product-id');
@@ -429,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 renderCart();
             });
         });
-        // Add event listeners for delete text
+
         document.querySelectorAll('.cart-delete').forEach(function(span) {
             span.addEventListener('click', function() {
                 const id = this.getAttribute('data-product-id');
@@ -463,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Insufficient amount.');
             return;
         }
-        // Generate PDF
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
             orientation: 'p',
@@ -509,6 +510,14 @@ document.addEventListener('DOMContentLoaded', function() {
         let subtotal = 0;
         Object.values(cart).forEach(item => { subtotal += item.price * item.quantity; });
 
+ 
+const controlNumber = 'CN-' + Date.now() + '-' + Math.floor(Math.random() * 900 + 100);
+
+
+doc.setFontSize(10);
+doc.text('Control No: ' + controlNumber, 5, y);
+y += 6;
+
         fetch('log_transaction.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -518,7 +527,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 discount: discountPercent,
                 total: total,
                 pay: pay,
-                change: change
+                change: change,
+                control_number: controlNumber 
             })
         });
 
@@ -550,47 +560,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
         doc.save('receipt.pdf');
 
-        // Clear cart after printing and update UI
+
         for (let key in cart) delete cart[key];
         renderCart();
 
-        // Reload the page to update product stock display
+ 
         setTimeout(() => {
             location.reload();
-        }, 500); // slight delay to ensure everything finishes
+        }, 500); 
     });
 
-    // SEARCH BAR FUNCTIONALITY
+    
     document.querySelector('.searchbar').addEventListener('input', function() {
         const searchValue = this.value.toLowerCase();
         document.querySelectorAll('.product-table tr').forEach(function(row, idx) {
-            // Skip the header row
+           
             if (idx === 0) return;
             const rowText = row.textContent.toLowerCase();
             row.style.display = rowText.includes(searchValue) ? '' : 'none';
         });
     });
 
-    // Initial update
+   
     updateTotal();
     updateChange();
 
     document.querySelectorAll('.pos-buttons button').forEach(btn => {
     if (btn.textContent.trim() === 'Mode of Payment') {
         btn.addEventListener('click', function() {
-            // Prevent payment selection if cart is empty
+            
             if (Object.keys(cart).length === 0) {
                 alert('Cart is empty. Please add items before selecting a mode of payment.');
                 return;
             }
-            // Show payment options
+            
             const choice = prompt('Select mode of payment:\n1. Cash (default)\n2. GCash\n3. Maya\n\nType 1, 2, or 3:');
             if (choice === '2') {
-                window.location.href = 'gcash.php'; // Redirect to GCash page
+                
+                const total = updateTotal();
+                document.getElementById('pay-amount').value = total;
+                updateChange();
+                localStorage.setItem('cart', JSON.stringify(Object.values(cart)));
+                localStorage.setItem('discountPercent', discountPercent);
+                localStorage.setItem('pay', total);
+                window.location.href = 'gcash.php';
             } else if (choice === '3') {
-                window.location.href = 'maya.php'; // Redirect to Maya page
+                
+                const total = updateTotal();
+                document.getElementById('pay-amount').value = total;
+                updateChange();
+                localStorage.setItem('cart', JSON.stringify(Object.values(cart)));
+                localStorage.setItem('discountPercent', discountPercent);
+                localStorage.setItem('pay', total);
+                window.location.href = 'maya.php';
             } else if (choice === '1' || choice === null || choice === '') {
-                // Do nothing, stay on Cash (default)
+                
             } else {
                 alert('Invalid choice. Please select 1, 2, or 3.');
             }
@@ -605,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btn.textContent.trim() === 'Discount') {
         btn.addEventListener('click', function() {
             let input = prompt('Enter discount percentage (0-100):', discountPercent || 0);
-            if (input === null) return; // Cancelled
+            if (input === null) return; 
             input = parseFloat(input);
             if (isNaN(input) || input < 0 || input > 100) {
                 alert('Please enter a valid discount percentage between 0 and 100.');
@@ -623,7 +647,7 @@ function reloadProductTable() {
         .then(response => response.text())
         .then(html => {
             document.querySelector('.product-table').innerHTML = html;
-            // Re-attach add-to-cart event listeners
+      
             document.querySelectorAll('.addbutton').forEach(function(button) {
                 button.addEventListener('click', function() {
                     const row = this.closest('tr');

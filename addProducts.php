@@ -136,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="tab-container">
         <div class="Exit-button"><a href="product.php" title="Back to Product List">&times;</a></div>
         <div class="form-title">Add New Product</div>
-        <form method="POST" action="addProducts.php" autocomplete="off">
+        <form method="POST" action="addProducts.php" autocomplete="off" novalidate>
             <div class="mb-3">
                 <label for="product_name" class="form-label">Product Name:</label>
                 <input type="text" class="form-control" id="product_name" name="product_name" required>
@@ -153,9 +153,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="price" class="form-label">Price:</label>
                 <input type="number" class="form-control" id="price" name="price" min="0" step="0.01" required>
             </div>
-            <button type="submit" class="Confirm-button">Confirm</button>
+            <center><button type="submit" class="Confirm-button">Confirm</button></center>
         </form>
     </div>
 </div>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const missing = [];
+    if (!document.getElementById('product_name').value.trim()) missing.push('Product Name');
+    if (!document.getElementById('brand').value.trim()) missing.push('Brand');
+    if (!document.getElementById('stock_left').value.trim()) missing.push('Stock');
+    if (!document.getElementById('price').value.trim()) missing.push('Price');
+    if (missing.length > 0) {
+        e.preventDefault();
+        alert('Please fill out the following required field(s):\n- ' + missing.join('\n- '));
+    }
+});
+</script>
 </body>
 </html>

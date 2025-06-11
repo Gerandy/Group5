@@ -57,12 +57,12 @@ if (isset($_GET['id'])) {
     }
     .tab-container {
         background: white;
-        padding: 5% 8%;
+        padding: 6% 10%;              /* Increased padding */
         border-radius: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 400px;
-        min-width: 300px;
+        max-width: 550px;             /* Increased max-width */
+        min-width: 380px;             /* Increased min-width */
         text-align: center;
         margin: 0 auto;
         position: relative;
@@ -75,15 +75,17 @@ if (isset($_GET['id'])) {
         width: 100%;
     }
     .form-label {
-        margin-bottom: 4px;
-        font-weight: 500;
+        margin-bottom: 8px;           /* More space below label */
+        font-weight: 600;
+        font-size: 1.15rem;           /* Larger label text */
     }
     input[type="text"], input[type="number"] {
         border-radius: 15px;
         border: none;
         background-color: #D9D9D9;
-        padding: 8px 12px;
+        padding: 14px 16px;           /* Larger input padding */
         width: 100%;
+        font-size: 1.15rem;           /* Larger input text */
         margin-bottom: 0;
     }
     .Product-name, .input-class {
@@ -102,15 +104,15 @@ if (isset($_GET['id'])) {
         border-radius: 15px;
         border: none;
         background-color: #1C8D20;
-        width: 60%;
+        width: 70%;                   /* Slightly wider button */
         text-align: center;
         cursor: pointer;
-        padding: 10px;
-        margin: 25px auto 0 auto;
+        padding: 14px;
+        margin: 30px auto 0 auto;     /* More space above button */
         display: block;
         color: #fff;
         font-weight: bold;
-        font-size: 1.1rem;
+        font-size: 1.2rem;            /* Larger button text */
         transition: background 0.2s;
     }
     .Confirm-button:hover {

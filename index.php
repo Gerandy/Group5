@@ -211,6 +211,13 @@ h6 {
     margin-bottom:-30px;
 }
 
+#pay-amount,
+#change-amount {
+    width: 180px !important;
+    min-width: 120px;
+    font-size: 1.1rem;
+    text-align: left;
+}
     </style>
 </head>
 <body>
@@ -310,12 +317,12 @@ h6 {
                     <div class="payment-summary">
     <div class="total-row">
         <span>PAY</span>
-        <span><strong>₱</strong> <input type="number" id="pay-amount" class="form-control form-control-sm d-inline" style="width:100px;display:inline;" min="0" value="0"></span>
+        <span><strong>₱</strong> <input type="number" id="pay-amount" class="form-control form-control-sm d-inline" style="width:180px;display:inline;" min="0" value="0"></span>
     </div>
     <hr>
     <div class="total-row">
         <span>CHANGE</span>
-        <span><strong>₱</strong> <input type="text" id="change-amount" class="form-control form-control-sm d-inline" style="width:100px;display:inline;" value="0" readonly></span>
+        <span><strong>₱</strong> <input type="text" id="change-amount" class="form-control form-control-sm d-inline" style="width:180px;display:inline;" value="0" readonly></span>
     </div>
     <hr>
     <div class="total-row">
@@ -336,6 +343,9 @@ h6 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const payInput = document.getElementById('pay-amount');
+    payInput.value = 0;
+    payInput.disabled = true;
 
     const cart = {};
     let discountPercent = 0;
@@ -407,6 +417,14 @@ document.addEventListener('DOMContentLoaded', function() {
 `;
         });
 
+        // Disable or enable pay field based on cart content
+        const payInput = document.getElementById('pay-amount');
+        if (Object.keys(cart).length === 0) {
+            payInput.value = 0;
+            payInput.disabled = true;
+        } else {
+            payInput.disabled = false;
+        }
 
         document.querySelectorAll('.btn-increase').forEach(function(btn) {
             btn.addEventListener('click', function() {
@@ -447,7 +465,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const total = updateTotal();
         const payInput = document.getElementById('pay-amount');
         let pay = parseFloat(payInput.value) || 0;
-        document.getElementById('change-amount').value = (pay - total).toLocaleString();
+        const changeField = document.getElementById('change-amount');
+        if (pay < total) {
+            changeField.value = pay === 0 ? "0" : "Insufficient Amount";
+        } else {
+            changeField.value = (pay - total).toLocaleString();
+        }
     }
 
     document.getElementById('pay-amount').addEventListener('input', updateChange);

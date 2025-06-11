@@ -155,6 +155,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <center><button type="submit" class="Confirm-button">Confirm</button></center>
         </form>
+        <div class="text-center mt-3">
+            <a href="importProducts.php" class="btn btn-outline-primary">
+                📥 Import Products from Excel
+            </a>
+            <br>
+            <small class="text-muted">Download a <a href="sample_import.xlsx" target="_blank">sample Excel template</a></small>
+        </div>
     </div>
 </div>
 <script>

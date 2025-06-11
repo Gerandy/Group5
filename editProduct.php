@@ -116,6 +116,12 @@ if (isset($_GET['id'])) {
     .Confirm-button:hover {
         background-color: #157016;
     }
+    .Confirm-button:disabled {
+        background-color: #b0b0b0;
+        color: #fff;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
   </style>
 </head>
 <body>
@@ -146,10 +152,31 @@ if (isset($_GET['id'])) {
                     <label for="price" class="form-label">Price:</label>
                     <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" required>
                 </div>
-                <button type="submit" class="Confirm-button">Update</button>
+                <button type="submit" class="Confirm-button" id="updateBtn" disabled>Update</button>
             </form>
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const updateBtn = document.getElementById('updateBtn');
+    const initial = {
+        product_name: form.product_name.value,
+        brand: form.brand.value,
+        stock_left: form.stock_left.value,
+        price: form.price.value
+    };
+
+    form.addEventListener('input', function() {
+        const changed =
+            form.product_name.value !== initial.product_name ||
+            form.brand.value !== initial.brand ||
+            form.stock_left.value !== initial.stock_left ||
+            form.price.value !== initial.price;
+        updateBtn.disabled = !changed;
+    });
+});
+</script>
 </body>
 </html>

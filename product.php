@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POS System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         body {
             background-color: #C0C0C0;
@@ -140,13 +141,22 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #2c6ea3; height: 70px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+<nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(90deg, #2c6ea3 60%, #4682b4 100%); height: 70px;">
   <div class="container-fluid">
-    <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="index.php">TechEase</a>
-    <div class="ms-auto">
-      <a href="addProducts.php" class="btn btn-light" style="font-weight: 500;">Add Product</a>
-      <a href="addVouchers.php" class="btn btn-light" style="font-weight: 500;">Voucher Management</a>
-      <a href="index.php" class="btn btn-light" style="font-weight: 500;">Home</a>
+    <a class="navbar-brand fw-bold d-flex align-items-center" style="font-size: 2rem; color: #fff;" href="index.php">
+      <img src="assets/teacheaseshoplogo.png" alt="Logo" style="height:36px;margin-right:10px;">TechEase
+    </a>
+    <div class="dropdown ms-auto">
+      <button class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center" type="button" id="menuDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-weight:600; font-size:1.1rem; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <span class="me-2"><img src="assets/menulogo.png" style="filter:invert(1);height:22px;"></span> Menu
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow rounded-4 animate__animated animate__fadeInDown" aria-labelledby="menuDropdown" style="min-width:220px;">
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="addProducts.php"><img src="assets/cartlogo.png" class="me-2">Add Product</a></li>
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="addBrands.php"><img src="assets/registerlogo.png" class="me-2">Register Brand</a></li>
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="addVouchers.php"><img src="assets/voucherlogo.png" class="me-2">Voucher Management</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="index.php"><img src="https://img.icons8.com/ios-filled/20/2c6ea3/home.png" class="me-2">Home</a></li>
+      </ul>
     </div>
   </div>
 </nav>

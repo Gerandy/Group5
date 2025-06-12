@@ -129,11 +129,16 @@ $product_result = mysqli_query($connection, $product_query);
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #2c6ea3; height: 70px;">
+<nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(90deg, #2c6ea3 60%, #4682b4 100%); height: 70px;">
   <div class="container-fluid">
-    <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="#">TechEase</a>
+    <a class="navbar-brand fw-bold d-flex align-items-center" style="font-size: 2rem; color: #fff;" href="index.php">
+      <img src="assets/teacheaseshoplogo.png" alt="Logo" style="height:36px;margin-right:10px;">TechEase
+    </a>
     <div class="ms-auto">
-      <a href="product.php" class="btn btn-light" style="font-weight: 500;">Product Page</a>
+      <a href="product.php" class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center"
+         style="font-weight:600; font-size:1.1rem; box-shadow:0 2px 8px rgba(0,0,0,0.08); min-width:140px;">
+        <span class="me-2" style="font-size:1.3rem;">&#8592;</span> Back
+      </a>
     </div>
   </div>
 </nav>

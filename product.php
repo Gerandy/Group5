@@ -144,8 +144,8 @@
   <div class="container-fluid">
     <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="index.php">TechEase</a>
     <div class="ms-auto">
-    
       <a href="addProducts.php" class="btn btn-light" style="font-weight: 500;">Add Product</a>
+      <a href="addVouchers.php" class="btn btn-light" style="font-weight: 500;">Voucher Management</a>
       <a href="index.php" class="btn btn-light" style="font-weight: 500;">Home</a>
     </div>
   </div>
@@ -154,10 +154,8 @@
         <div class="row g-3">
             <div class="col-lg-12">
                 <div class="pos-container">
-                    <div class="search-container" style="display: flex; align-items: center;">
-                        <a href="addProducts.php" class="buttontop btn btn-primary me-2">Add new</a>
+                    <div class="search-container" style="display: flex; align-items: center; justify-content: flex-start;">
                         <input type="text" class="searchbar" placeholder="Search product...">
-                        <span class="search-icon">🔍</span>
                     </div>
                     <hr class="separator-line">
                     <div class="product-table">
@@ -184,9 +182,9 @@
                                         echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
                                         echo '<td>' . htmlspecialchars($row['price']) . '</td>';
                                         echo '<td>
-    <a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #0d6efd; text-decoration: underline; margin-right: 15px;">Edit</a>
-    <a href="deleteProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>
-</td>';
+                                                <a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #0d6efd; text-decoration: underline; margin-right: 15px;">Edit</a>
+                                                <a href="deleteProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>
+                                            </td>';
                                         echo '</tr>';
                                     }
                                 } else {

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POS System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         body {
             background-color: #C0C0C0;
@@ -140,13 +141,22 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #2c6ea3; height: 70px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+<nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(90deg, #2c6ea3 60%, #4682b4 100%); height: 70px;">
   <div class="container-fluid">
-    <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="index.php">TechEase</a>
-    <div class="ms-auto">
-    
-      <a href="addProducts.php" class="btn btn-light" style="font-weight: 500;">Add Product</a>
-      <a href="index.php" class="btn btn-light" style="font-weight: 500;">Home</a>
+    <a class="navbar-brand fw-bold d-flex align-items-center" style="font-size: 2rem; color: #fff;" href="index.php">
+      <img src="assets/teacheaseshoplogo.png" alt="Logo" style="height:36px;margin-right:10px;">TechEase
+    </a>
+    <div class="dropdown ms-auto">
+      <button class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center" type="button" id="menuDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-weight:600; font-size:1.1rem; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <span class="me-2"><img src="assets/menulogo.png" style="filter:invert(1);height:22px;"></span> Menu
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow rounded-4 animate__animated animate__fadeInDown" aria-labelledby="menuDropdown" style="min-width:220px;">
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="addProducts.php"><img src="assets/cartlogo.png" class="me-2">Add Product</a></li>
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="addBrands.php"><img src="assets/registerlogo.png" class="me-2">Register Brand</a></li>
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="addVouchers.php"><img src="assets/voucherlogo.png" class="me-2">Voucher Management</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="index.php"><img src="https://img.icons8.com/ios-filled/20/2c6ea3/home.png" class="me-2">Home</a></li>
+      </ul>
     </div>
   </div>
 </nav>
@@ -154,10 +164,8 @@
         <div class="row g-3">
             <div class="col-lg-12">
                 <div class="pos-container">
-                    <div class="search-container" style="display: flex; align-items: center;">
-                        <a href="addProducts.php" class="buttontop btn btn-primary me-2">Add new</a>
+                    <div class="search-container" style="display: flex; align-items: center; justify-content: flex-start;">
                         <input type="text" class="searchbar" placeholder="Search product...">
-                        <span class="search-icon">🔍</span>
                     </div>
                     <hr class="separator-line">
                     <div class="product-table">
@@ -174,43 +182,28 @@
                             <tbody>
                                 <?php
                                 include('db/database.php');
-
-// Pagination setup
-$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-$limit = 15;
-$offset = ($page - 1) * $limit;
-
-// Get products for current page
-$query = "SELECT * FROM products LIMIT $limit OFFSET $offset";
-$result = mysqli_query($connection, $query);
-
-// Get total number of products for pagination
-$total_query = "SELECT COUNT(*) as total FROM products";
-$total_result = mysqli_query($connection, $total_query);
-$total_row = mysqli_fetch_assoc($total_result);
-$total_products = $total_row['total'];
-$total_pages = ceil($total_products / $limit);
-
-if (mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo '<tr>';
-        echo '<td>' . htmlspecialchars($row['product_name']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['price']) . '</td>';
-        echo '<td>
-<a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #0d6efd; text-decoration: underline; margin-right: 15px;">Edit</a>
-<a href="deleteProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>
-</td>';
-        echo '</tr>';
-    }
-} else {
-    echo '<tr><td colspan="5">No products found</td></tr>';
-}
-?>
-</tbody>
-</table>
-
+                                $query = "SELECT * FROM products";
+                                $result = mysqli_query($connection, $query);
+                                if (mysqli_num_rows($result) > 0) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo '<tr>';
+                                        echo '<td>' . htmlspecialchars($row['product_name']) . '</td>';
+                                        echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
+                                        echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
+                                        echo '<td>' . htmlspecialchars($row['price']) . '</td>';
+                                        echo '<td>
+                                                <a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #0d6efd; text-decoration: underline; margin-right: 15px;">Edit</a>
+                                                <a href="deleteProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>
+                                            </td>';
+                                        echo '</tr>';
+                                    }
+                                } else {
+                                    echo '<tr><td colspan="5">No products found</td></tr>';
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

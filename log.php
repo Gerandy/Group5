@@ -10,15 +10,22 @@ if (file_exists($logFile)) {
 <head>
     <title>Transaction Logs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #2c6ea3; height: 70px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+<nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(90deg, #2c6ea3 60%, #4682b4 100%); height: 70px;">
   <div class="container-fluid">
-    <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="index.php">TechEase</a>
-    <div class="ms-auto">
-      <a href="index.php" class="btn btn-light me-2" style="font-weight: 500;">Home</a>
-      <a href="product.php" class="btn btn-light me-2" style="font-weight: 500;">Products</a>
-      <a href="log.php" class="btn btn-light" style="font-weight: 500;">Transaction History</a>
+    <a class="navbar-brand fw-bold d-flex align-items-center" style="font-size: 2rem; color: #fff;" href="index.php">
+      <img src="assets/teacheaseshoplogo.png" alt="Logo" style="height:36px;margin-right:10px;">TechEase
+    </a>
+    <div class="dropdown ms-auto">
+      <button class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center" type="button" id="menuDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-weight:600; font-size:1.1rem; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <span class="me-2"><img src="https://img.icons8.com/ios-filled/24/2c6ea3/menu--v1.png" style="filter:invert(1);height:22px;"></span> Menu
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow rounded-4 animate__animated animate__fadeInDown" aria-labelledby="menuDropdown" style="min-width:220px;">
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="product.php"><img src="assets/productslogo.png" class="me-2" alt="Products">Products</a></li>
+        <li><a class="dropdown-item py-3 d-flex align-items-center" href="index.php"><img src="assets/homelogo.png" class="me-2" alt="Home">Home</a></li>
+      </ul>
     </div>
   </div>
 </nav>
@@ -123,5 +130,6 @@ document.querySelectorAll('.reprint-btn').forEach(function(btn) {
     });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -32,9 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin: 0;
             display: flex;
             flex-direction: column;
+            font-family: 'Inter', Arial, Helvetica, sans-serif; /* Consistent font */
         }
         .navbar {
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
         }
         .container.mt-4 {
             display: flex;
@@ -53,6 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             flex-direction: column;
             justify-content: center;
             align-items: stretch;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
         }
         .Exit-button {
             display: flex;
@@ -65,6 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-decoration: none;
             font-weight: bold;
             transition: color 0.2s;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
         }
         .Exit-button a:hover {
             color: #dc3545;
@@ -74,6 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #2c6ea3;
             margin-bottom: 6px;
             margin-left: 2px;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
         }
         .form-control {
             border-radius: 12px;
@@ -83,6 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 12px;
             margin-bottom: 18px;
             transition: border-color 0.2s;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
         }
         .form-control:focus {
             border-color: #2c6ea3;
@@ -94,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #1C8D20;
             width: 60%;
             text-align: center;
-            font-family: inter;
+            font-family: 'Inter', Arial, Helvetica, sans-serif; /* Consistent font */
             cursor: pointer;
             font-weight: bold;
             padding: 12px;
@@ -114,16 +120,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #2c6ea3;
             margin-bottom: 25px;
             letter-spacing: 1px;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
         }
     </style>
+    <!-- Add Inter font from Google Fonts for consistency -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #2c6ea3; height: 70px;">
+<nav class="navbar navbar-expand-lg shadow-sm" style="background: linear-gradient(90deg, #2c6ea3 60%, #4682b4 100%); height: 70px;">
   <div class="container-fluid">
-    <a class="navbar-brand text-white fw-bold" style="font-size: 2rem;" href="index.php">TechEase</a>
+    <a class="navbar-brand fw-bold d-flex align-items-center" style="font-size: 2rem; color: #fff;" href="index.php">
+      <img src="assets/teacheaseshoplogo.png" alt="Logo" style="height:36px;margin-right:10px;">TechEase
+    </a>
     <div class="ms-auto">
-      <a href="add_customer.php" class="btn btn-light me-2" style="font-weight: 500;">Add Customer</a>
-      <a href="product.php" class="btn btn-light" style="font-weight: 500;">Product Page</a>
+      <a href="product.php" class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center"
+         style="font-weight:600; font-size:1.1rem; box-shadow:0 2px 8px rgba(0,0,0,0.08); min-width:140px;">
+        <span class="me-2" style="font-size:1.3rem;">&#8592;</span> Back
+      </a>
     </div>
   </div>
 </nav>

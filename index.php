@@ -1,7 +1,21 @@
 <?php 
 include ('db/database.php'); 
 
+// Pagination setup
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$limit = 15;
+$offset = ($page - 1) * $limit;
 
+// Get products for current page
+$query = "SELECT * FROM products LIMIT $limit OFFSET $offset";
+$result = mysqli_query($connection, $query);
+
+// Get total number of products for pagination
+$total_query = "SELECT COUNT(*) as total FROM products";
+$total_result = mysqli_query($connection, $total_query);
+$total_row = mysqli_fetch_assoc($total_result);
+$total_products = $total_row['total'];
+$total_pages = ceil($total_products / $limit);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -243,47 +257,30 @@ h6 {
                     </div>
                     <hr class="separator-line">
                     <div class="product-table">
-                        <tbody>
-    <?php
-    
-
-
-                            
-
-                        $query = "SELECT * FROM products";
-                        $result = mysqli_query($connection, $query);
-                        if (mysqli_num_rows($result) > 0) {
-                            echo '<table class="table table-striped">';
-                                echo '<tr>';
-                                echo '<th> Product Name</th>';
-                                echo '<th> Brand</th>';
-                                echo '<th> Stock Left</th>';
-                                echo '<th> Price</th>';
-                                echo '<th> Option</th>';
-                                echo '</tr>';
-                                
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                
-                                echo '<tr>';
-                                echo '<td>' . htmlspecialchars($row['product_name']) . '</td>';
-                                echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
-                                echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
-                                echo '<td>' . htmlspecialchars($row['price']) . '</td>';
-                                echo '<td><button class="addbutton" data-product-id="' . htmlspecialchars($row['id']) . '">Add Item</button>'. '</td>';
-                                echo '</tr>';
-                                
-                            }
-                            echo '</table>';
-                        } else {
-                            echo '<tr><td colspan="4">No products found</td></tr>';
-                        }
-                                ?>
-                            </tbody>
-
-                               
-                                
-                            </tbody>
-                        
+                        <table class="table table-striped">
+        <tr>
+            <th> Product Name</th>
+            <th> Brand</th>
+            <th> Stock Left</th>
+            <th> Price</th>
+            <th> Option</th>
+        </tr>
+        <?php
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '<tr>';
+                echo '<td>' . htmlspecialchars($row['product_name']) . '</td>';
+                echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
+                echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
+                echo '<td>' . htmlspecialchars($row['price']) . '</td>';
+                echo '<td><button class="addbutton" data-product-id="' . htmlspecialchars($row['id']) . '">Add Item</button>'. '</td>';
+                echo '</tr>';
+            }
+        } else {
+            echo '<tr><td colspan="5">No products found</td></tr>';
+        }
+        ?>
+    </table>
                     </div>
                     
                 </div>
@@ -701,3 +698,14 @@ function reloadProductTable() {
 </script>
 </body>
 </html>
+<?php if ($total_pages > 1): ?>
+<nav>
+    <ul class="pagination justify-content-center mt-4">
+        <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+            <li class="page-item <?php if ($p == $page) echo 'active'; ?>">
+                <a class="page-link" href="?page=<?php echo $p; ?>"><?php echo $p; ?></a>
+            </li>
+        <?php endfor; ?>
+    </ul>
+</nav>
+<?php endif; ?>

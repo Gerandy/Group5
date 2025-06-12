@@ -174,32 +174,58 @@
                             <tbody>
                                 <?php
                                 include('db/database.php');
-                                $query = "SELECT * FROM products";
-                                $result = mysqli_query($connection, $query);
-                                if (mysqli_num_rows($result) > 0) {
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                        echo '<tr>';
-                                        echo '<td>' . htmlspecialchars($row['product_name']) . '</td>';
-                                        echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
-                                        echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
-                                        echo '<td>' . htmlspecialchars($row['price']) . '</td>';
-                                        echo '<td>
-    <a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #0d6efd; text-decoration: underline; margin-right: 15px;">Edit</a>
-    <a href="deleteProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>
+
+// Pagination setup
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$limit = 15;
+$offset = ($page - 1) * $limit;
+
+// Get products for current page
+$query = "SELECT * FROM products LIMIT $limit OFFSET $offset";
+$result = mysqli_query($connection, $query);
+
+// Get total number of products for pagination
+$total_query = "SELECT COUNT(*) as total FROM products";
+$total_result = mysqli_query($connection, $total_query);
+$total_row = mysqli_fetch_assoc($total_result);
+$total_products = $total_row['total'];
+$total_pages = ceil($total_products / $limit);
+
+if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo '<tr>';
+        echo '<td>' . htmlspecialchars($row['product_name']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['price']) . '</td>';
+        echo '<td>
+<a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #0d6efd; text-decoration: underline; margin-right: 15px;">Edit</a>
+<a href="deleteProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>
 </td>';
-                                        echo '</tr>';
-                                    }
-                                } else {
-                                    echo '<tr><td colspan="5">No products found</td></tr>';
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
+        echo '</tr>';
+    }
+} else {
+    echo '<tr><td colspan="5">No products found</td></tr>';
+}
+?>
+</tbody>
+</table>
+
                 </div>
             </div>
         </div>
     </div>
+    <?php if ($total_pages > 1): ?>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+                <li class="page-item <?php if ($p == $page) echo 'active'; ?>">
+                    <a class="page-link" href="?page=<?php echo $p; ?>"><?php echo $p; ?></a>
+                </li>
+            <?php endfor; ?>
+        </ul>
+    </nav>
+    <?php endif; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     

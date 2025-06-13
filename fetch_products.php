@@ -18,6 +18,7 @@ $product_result = mysqli_query($connection, $product_query);
 <table class="table table-bordered">
     <thead>
         <tr>
+            <th>ID</th>
             <th>Product Name</th>
             <th>Brand</th>
             <th>Price</th>
@@ -26,14 +27,22 @@ $product_result = mysqli_query($connection, $product_query);
     </thead>
     <tbody>
         <?php if (mysqli_num_rows($product_result) > 0): ?>
-            <?php while ($row = mysqli_fetch_assoc($product_result)): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row['product_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['brand']); ?></td>
-                    <td><?php echo htmlspecialchars($row['price']); ?></td>
-                    <td><button class="btn btn-sm btn-success">Add</button></td>
-                </tr>
+            <?php $rowCount = 0; while ($row = mysqli_fetch_assoc($product_result)): $rowCount++; ?>
+            <tr style="height:48px;">
+                <td><?= htmlspecialchars($row['id']) ?></td>
+                <td><?= htmlspecialchars($row['product_name']) ?></td>
+                <td><?= htmlspecialchars($row['brand']) ?></td>
+                <td>₱<?= number_format($row['price'], 2) ?></td>
+                <td>
+                    <button class="btn btn-sm btn-success">Add</button>
+                </td>
+            </tr>
             <?php endwhile; ?>
+            <?php for ($i = $rowCount; $i < $limit; $i++): ?>
+            <tr style="height:48px;">
+                <td colspan="5" style="background:#f8fafc;">&nbsp;</td>
+            </tr>
+            <?php endfor; ?>
         <?php else: ?>
             <tr><td colspan="4" class="text-center">No products found.</td></tr>
         <?php endif; ?>

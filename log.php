@@ -4,6 +4,14 @@ $logFile = __DIR__ . '/log.json';
 if (file_exists($logFile)) {
     $logs = json_decode(file_get_contents($logFile), true) ?: [];
 }
+
+// Pagination setup
+$logsPerPage = 10; // Show only 10 items per page
+$totalLogs = count($logs);
+$totalPages = ceil($totalLogs / $logsPerPage);
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$start = ($page - 1) * $logsPerPage;
+$logsToShow = array_slice(array_reverse($logs), $start, $logsPerPage);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,39 +38,75 @@ if (file_exists($logFile)) {
   </div>
 </nav>
 <div class="container mt-4">
-    <h2>Transaction Logs</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Date/Time</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Pay</th>
-                <th>Change</th>
-                <th>Discount</th>
-                <th>Reprint</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach (array_reverse($logs) as $log): ?>
-            <tr>
-                <td><?= htmlspecialchars($log['datetime']) ?></td>
-                <td>
-                    <?php foreach ($log['cart'] as $item): ?>
-                        <?= htmlspecialchars($item['name']) ?> x<?= $item['quantity'] ?> (₱<?= $item['price'] ?>)<br>
-                    <?php endforeach; ?>
-                </td>
-                <td>₱<?= htmlspecialchars($log['total']) ?></td>
-                <td>₱<?= htmlspecialchars($log['pay']) ?></td>
-                <td>₱<?= htmlspecialchars($log['change']) ?></td>
-                <td><?= isset($log['discount']) ? $log['discount'].'%' : '0%' ?></td>
-                <td>
-                    <button class="btn btn-primary btn-sm reprint-btn" data-log='<?= htmlspecialchars(json_encode($log), ENT_QUOTES, "UTF-8") ?>'>Reprint</button>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <center><h2 class="mb-4 fw-bold" style="color:#2c6ea3;">Transaction Logs</h2></center>
+    <div class="mx-auto" style="max-width:1200px;">
+        <!-- Card with increased height and pagination inside -->
+        <div class="bg-white rounded-4 shadow-lg p-3 pb-3" style="height:650px; display: flex; flex-direction: column; justify-content: flex-start;">
+            <!-- Table header (fixed) -->
+            <div style="overflow: hidden;">
+                <table class="table table-bordered align-middle mb-0" style="table-layout:fixed;">
+                    <thead class="table-primary">
+                        <tr>
+                            <th style="width: 14%;">Date/Time</th>
+                            <th style="width: 32%;">Items</th>
+                            <th style="width: 11%;">Total</th>
+                            <th style="width: 11%;">Pay</th>
+                            <th style="width: 11%;">Change</th>
+                            <th style="width: 9%;">Discount</th>
+                            <th style="width: 12%;">Reprint</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <!-- Table body (scrollable) -->
+            <div style="height:600px; overflow-y:auto;">
+                <table class="table table-bordered align-middle mb-0" style="table-layout:fixed;">
+                    <tbody>
+                        <?php
+                        $rowCount = 0;
+                        foreach ($logsToShow as $log): $rowCount++; ?>
+                        <tr style="height:50px;">
+                            <td class="text-break" style="width: 14%;"><?= htmlspecialchars($log['datetime']) ?></td>
+                            <td class="text-break" style="width: 32%; word-break:break-word;">
+                                <?php foreach ($log['cart'] as $item): ?>
+                                    <span class="badge bg-light text-dark mb-1 fw-semibold" style="font-size:1rem;">
+                                        <?= htmlspecialchars($item['name']) ?> x<?= $item['quantity'] ?> (₱<?= $item['price'] ?>)
+                                    </span><br>
+                                <?php endforeach; ?>
+                            </td>
+                            <td class="text-break fw-semibold text-success" style="width: 11%;">₱<?= htmlspecialchars($log['total']) ?></td>
+                            <td class="text-break" style="width: 11%;">₱<?= htmlspecialchars($log['pay']) ?></td>
+                            <td class="text-break" style="width: 11%;">₱<?= htmlspecialchars($log['change']) ?></td>
+                            <td class="text-break" style="width: 9%;"><?= isset($log['discount']) ? $log['discount'].'%' : '0%' ?></td>
+                            <td style="width: 12%;">
+                                <button class="btn btn-outline-primary btn-sm reprint-btn w-100 rounded-pill" data-log='<?= htmlspecialchars(json_encode($log), ENT_QUOTES, "UTF-8") ?>'>
+                                    <img src="https://img.icons8.com/ios-filled/18/2c6ea3/print.png" style="margin-right:6px;filter:invert(0.2);">Reprint
+                                </button>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php for ($i = $rowCount; $i < 10; $i++): ?>
+                        <tr style="height:50px;">
+                            <td colspan="7" style="background:#f8fafc;">&nbsp;</td>
+                        </tr>
+                        <?php endfor; ?>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination INSIDE the card, just below the table -->
+            <div class="d-flex justify-content-center align-items-center mt-2">
+                <nav aria-label="Transaction log pagination">
+                    <ul class="pagination justify-content-center mb-0">
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item<?= $i == $page ? ' active' : '' ?>">
+                                <a class="page-link rounded-pill" href="?page=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -131,5 +175,57 @@ document.querySelectorAll('.reprint-btn').forEach(function(btn) {
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+.table {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: #fff;
+}
+.table th, .table td {
+    vertical-align: middle !important;
+    text-align: center;
+    font-size: 1.05rem;
+    background: #fff;
+    word-break: break-word;
+    border-color: #e3e8ee !important;
+    min-width: 80px;
+    white-space: normal;
+}
+.table thead th {
+    background: linear-gradient(90deg, #2c6ea3 60%, #4682b4 100%) !important;
+    color: #fff;
+    font-weight: 600;
+    border-bottom: 2px solid #4682b4;
+    font-size: 1.08rem;
+    letter-spacing: 0.5px;
+}
+.table tbody tr {
+    transition: background 0.2s;
+}
+.table tbody tr:hover {
+    background: #f0f6fa;
+}
+.pagination .page-link {
+    color: #2c6ea3;
+    border: none;
+    font-weight: 500;
+    margin: 0 2px;
+    transition: background 0.2s, color 0.2s;
+}
+.pagination .page-item.active .page-link,
+.pagination .page-link:hover {
+    background: #2c6ea3;
+    color: #fff;
+}
+.bg-white {
+    background: #fff !important;
+}
+@media (max-width: 1200px) {
+    .table th, .table td { font-size: 0.98rem; }
+}
+@media (max-width: 900px) {
+    .table th, .table td { font-size: 0.92rem; }
+}
+</style>
 </body>
 </html>

@@ -152,6 +152,17 @@ $total_pages = ceil($total_products / $limit);
     
 }
 
+.payment-summary .btn {
+    min-width: 120px;
+    min-height: 45px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+}
+
+.payment-summary .row {
+    margin-top: 10px;
+}
+
 .payment-row {
     display: flex;
     justify-content: space-between;
@@ -266,6 +277,7 @@ h6 {
                     <div class="product-table">
                         <table class="table table-striped">
         <tr>
+            <th> ID</th>
             <th> Product Name</th>
             <th> Brand</th>
             <th> Stock Left</th>
@@ -276,6 +288,7 @@ h6 {
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 echo '<tr>';
+                echo '<td>' . htmlspecialchars($row['id']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['product_name']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
                 echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';
@@ -291,11 +304,7 @@ h6 {
                     </div>
                     
                 </div>
-                <div class="pos-buttons">
-                    <button class="">Mode of Payment</button>
-                    <button class="">Discount</button>
-                    <button class="">Clear All</button>
-                </div>
+                
             </div>
     
             
@@ -333,11 +342,25 @@ h6 {
         <span>TOTAL</span>
         <span><strong>₱</strong> <button class="btn btn-sm btn-light" id="total-amount">0</button></span>
     </div>
+    <!-- Button grid below total -->
+    <div class="row mt-3 gx-2 gy-2">
+        <div class="col-6 d-grid">
+            <button class="btn btn-danger w-100" id="discount-btn">Discount</button>
+        </div>
+        <div class="col-6 d-grid">
+            <button class="btn btn-danger w-100" id="clearall-btn">Clear All</button>
+        </div>
+        <div class="col-6 d-grid">
+            <button class="btn btn-danger w-100" id="modeofpayment-btn">Mode of Payment</button>
+        </div>
+        <div class="col-6 d-grid">
+            <button class="btn btn-success w-100" id="printpay-btn">Print/Pay</button>
+        </div>
+    </div>
 </div>
                    
                 </div>
                 
-                <button class="button-checkout">Print/Pay</button>
             </div>
         </div>
     </div>
@@ -358,9 +381,9 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const row = this.closest('tr');
             const productId = this.getAttribute('data-product-id');
-            const name = row.children[0].textContent;
-            const stock = parseInt(row.children[2].textContent); // Stock Left column
-            const price = parseFloat(row.children[3].textContent.replace(/[^\d.]/g, ''));
+            const name = row.children[1].textContent;
+            const stock = parseInt(row.children[3].textContent); // Stock Left column
+            const price = parseFloat(row.children[4].textContent.replace(/[^\d.]/g, ''));
 
             if (stock === 0) {
                 alert('Cannot add item with 0 stock!');
@@ -411,7 +434,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <button class="btn btn-sm btn-decrease" data-product-id="${productId}">-</button>
         ${item.quantity}
         <button class="btn btn-sm btn-increase" data-product-id="${productId}">+</button>
-        <span class="text-muted" style="font-size:12px;">${item.stock}</span>
+        <span class="text-muted" style="font-size:12px;">${item.stock - item.quantity}</span>
     </td>
     <td>
         ₱${(item.price * item.quantity).toLocaleString()}
@@ -419,6 +442,29 @@ document.addEventListener('DOMContentLoaded', function() {
     </td>
 </tr>
 `;
+        });
+
+        // --- Update Stock Left in Product Table ---
+        document.querySelectorAll('.product-table tr').forEach(function(row, idx) {
+            if (idx === 0) return; // skip header
+            const productId = row.querySelector('.addbutton')?.getAttribute('data-product-id');
+            if (!productId) return;
+            const stockCell = row.children[3];
+            let originalStock = parseInt(stockCell.getAttribute('data-original-stock'));
+            if (isNaN(originalStock)) {
+                // Save original stock if not already saved
+                originalStock = parseInt(stockCell.textContent);
+                stockCell.setAttribute('data-original-stock', originalStock);
+            }
+            const inCart = cart[productId]?.quantity || 0;
+            stockCell.textContent = originalStock - inCart;
+            // Optional: visually disable Add Item if stock is 0
+            const addBtn = row.querySelector('.addbutton');
+            if (originalStock - inCart <= 0) {
+                addBtn.disabled = true;
+            } else {
+                addBtn.disabled = false;
+            }
         });
 
         // Disable or enable pay field based on cart content
@@ -479,7 +525,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('pay-amount').addEventListener('input', updateChange);
 
-    document.querySelector('.button-checkout').addEventListener('click', function() {
+    document.getElementById('modeofpayment-btn').addEventListener('click', function() {
+        if (Object.keys(cart).length === 0) {
+            alert('Cart is empty. Please add items before selecting a mode of payment.');
+            return;
+        }
+        const choice = prompt('Select mode of payment:\n1. Cash (default)\n2. GCash\n3. Maya\n\nType 1, 2, or 3:');
+        if (choice === '2') {
+            const total = updateTotal();
+            document.getElementById('pay-amount').value = total;
+            updateChange();
+            localStorage.setItem('cart', JSON.stringify(Object.values(cart)));
+            localStorage.setItem('discountPercent', discountPercent);
+            localStorage.setItem('pay', total);
+            window.location.href = 'gcash.php';
+        } else if (choice === '3') {
+            const total = updateTotal();
+            document.getElementById('pay-amount').value = total;
+            updateChange();
+            localStorage.setItem('cart', JSON.stringify(Object.values(cart)));
+            localStorage.setItem('discountPercent', discountPercent);
+            localStorage.setItem('pay', total);
+            window.location.href = 'maya.php';
+        } else if (choice === '1' || choice === null || choice === '') {
+            // Default cash, do nothing
+        } else {
+            alert('Invalid choice. Please select 1, 2, or 3.');
+        }
+    });
+    document.getElementById('clearall-btn').addEventListener('click', function() {
+        for (let key in cart) delete cart[key];
+        renderCart();
+    });
+    document.getElementById('discount-btn').addEventListener('click', function() {
+        let input = prompt('Enter discount percentage (0-100):', discountPercent || 0);
+        if (input === null) return; 
+        input = parseFloat(input);
+        if (isNaN(input) || input < 0 || input > 100) {
+            alert('Please enter a valid discount percentage between 0 and 100.');
+            return;
+        }
+        discountPercent = input;
+        renderCart();
+    });
+    document.getElementById('printpay-btn').addEventListener('click', function() {
         const total = updateTotal();
         const pay = parseFloat(document.getElementById('pay-amount').value) || 0;
         const change = parseFloat(document.getElementById('change-amount').value.replace(/,/g, '')) || 0;

@@ -571,5 +571,38 @@
         "control_number": "CN-1749623528669-980",
         "id": "txn_684922e8a8afc",
         "datetime": "2025-06-11 08:32:08"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "GTX",
+                "price": 50000,
+                "quantity": 3,
+                "stock": 3
+            },
+            {
+                "id": "2",
+                "name": "RTX",
+                "price": 40000,
+                "quantity": 3,
+                "stock": 5
+            },
+            {
+                "id": "5",
+                "name": "RTX",
+                "price": 40500,
+                "quantity": 1,
+                "stock": 1
+            }
+        ],
+        "subtotal": 310500,
+        "discount": 0,
+        "total": 310500,
+        "pay": 320000,
+        "change": 9500,
+        "control_number": "CN-1749786274735-700",
+        "id": "txn_684b9ea2b44ce",
+        "datetime": "2025-06-13 05:44:34"
     }
 ]

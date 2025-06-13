@@ -172,6 +172,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Product Name</th>
                                     <th>Brand</th>
                                     <th>Stock Left</th>
@@ -187,6 +188,7 @@
                                 if (mysqli_num_rows($result) > 0) {
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         echo '<tr>';
+                                        echo '<td>' . htmlspecialchars($row['id']) . '</td>';
                                         echo '<td>' . htmlspecialchars($row['product_name']) . '</td>';
                                         echo '<td>' . htmlspecialchars($row['brand']) . '</td>';
                                         echo '<td>' . htmlspecialchars($row['stock_left']) . '</td>';

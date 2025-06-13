@@ -145,34 +145,93 @@ $product_result = mysqli_query($connection, $product_query);
 <div class="container mt-4">
     <div class="tab-container">
         <div class="form-title">Voucher Management</div>
-        <!-- Add Voucher Form -->
-        <form class="mb-4 d-flex" style="gap:10px;">
-            <input type="text" class="form-control" placeholder="Enter voucher name..." required>
-            <button type="button" class="btn btn-success">Add Voucher</button>
-        </form>
+        <!-- Add Voucher Button Centered -->
+        <div class="d-flex justify-content-center mb-4">
+            <button type="button" class="btn btn-success" id="showAddVoucherModal" style="width: 320px; font-size: 1.2rem; font-weight: 600;">
+                + Add Voucher
+            </button>
+        </div>
+        <!-- Add Voucher Modal -->
+        <div class="modal fade" id="addVoucherModal" tabindex="-1" aria-labelledby="addVoucherModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addVoucherModalLabel">Add New Voucher</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="addVoucherForm">
+                  <div class="mb-3">
+                    <label for="voucherTitle" class="form-label">Voucher Title</label>
+                    <input type="text" class="form-control" id="voucherTitle">
+                  </div>
+                  <div class="mb-3">
+                    <label for="voucherCode" class="form-label">Voucher Code</label>
+                    <input type="text" class="form-control" id="voucherCode">
+                  </div>
+                  <div class="mb-3">
+                    <label for="voucherDiscount" class="form-label">Discount Percentage (%)</label>
+                    <input type="number" class="form-control" id="voucherDiscount" min="1" max="100">
+                  </div>
+                  <div id="voucherError" class="alert alert-danger py-2 px-3 mb-3 d-none" role="alert" style="font-size: 0.98rem;"></div>
+                  <button type="submit" class="btn btn-success w-100">Add Voucher</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Edit Voucher Modal -->
+        <div class="modal fade" id="editVoucherModal" tabindex="-1" aria-labelledby="editVoucherModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editVoucherModalLabel">Edit Voucher</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="editVoucherForm">
+                  <div class="mb-3">
+                    <label for="editVoucherTitle" class="form-label">Voucher Title</label>
+                    <input type="text" class="form-control" id="editVoucherTitle">
+                  </div>
+                  <div class="mb-3">
+                    <label for="editVoucherCode" class="form-label">Voucher Code</label>
+                    <input type="text" class="form-control" id="editVoucherCode">
+                  </div>
+                  <div class="mb-3">
+                    <label for="editVoucherDiscount" class="form-label">Discount Percentage (%)</label>
+                    <input type="number" class="form-control" id="editVoucherDiscount" min="1" max="100">
+                  </div>
+                  <div id="editVoucherError" class="alert alert-danger py-2 px-3 mb-3 d-none" role="alert" style="font-size: 0.98rem;"></div>
+                  <button type="submit" class="btn btn-success w-100" id="editVoucherConfirmBtn" disabled>Confirm</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="row">
             <!-- Voucher List -->
             <div class="col-md-4">
                 <div class="voucher-list">
                     <div class="voucher-item active">
                         <span style="color:#2c6ea3;font-weight:bold;">Summer Sale</span>
-                        <div class="voucher-actions">
-                            <!-- Replace the Turn On/Turn Off buttons inside .voucher-actions with this switch markup -->
-                            <label class="switch">
+                        <div class="voucher-actions d-flex align-items-center">
+                            <label class="switch mb-0">
                               <input type="checkbox" checked>
                               <span class="slider"></span>
                             </label>
+                            <a href="editVoucher.php?id=1" class="btn btn-sm btn-primary ms-2 me-2">Edit</a>
                             <button class="btn btn-sm btn-danger">Delete</button>
                         </div>
                     </div>
                     <div class="voucher-item">
                         <span style="color:#2c6ea3;font-weight:bold;">Holiday Bundle</span>
-                        <div class="voucher-actions">
-                            <!-- Replace the Turn On/Turn Off buttons inside .voucher-actions with this switch markup -->
-                            <label class="switch">
+                        <div class="voucher-actions d-flex align-items-center">
+                            <label class="switch mb-0">
                               <input type="checkbox">
                               <span class="slider"></span>
                             </label>
+                            <a href="editVoucher.php?id=2" class="btn btn-sm btn-primary ms-2 me-2">Edit</a>
                             <button class="btn btn-sm btn-danger">Delete</button>
                         </div>
                     </div>
@@ -187,6 +246,7 @@ $product_result = mysqli_query($connection, $product_query);
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Product Name</th>
                                     <th>Brand</th>
                                     <th>Price</th>
@@ -195,12 +255,14 @@ $product_result = mysqli_query($connection, $product_query);
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td>1</td>
                                     <td>Mouse X100</td>
                                     <td>Logitech</td>
                                     <td>500</td>
                                     <td><button class="btn btn-sm btn-danger">Remove</button></td>
                                 </tr>
                                 <tr>
+                                    <td>2</td>
                                     <td>Keyboard K200</td>
                                     <td>HP</td>
                                     <td>700</td>
@@ -225,6 +287,7 @@ $product_result = mysqli_query($connection, $product_query);
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 function loadProducts(page = 1, search = '') {
     $.get('fetch_products.php', { page: page, search: search }, function(data) {
@@ -249,6 +312,103 @@ $(document).ready(function() {
         loadProducts(page, search);
     });
 });
+
+// Show modal on button click
+document.getElementById('showAddVoucherModal').onclick = function() {
+    var modal = new bootstrap.Modal(document.getElementById('addVoucherModal'));
+    modal.show();
+};
+
+// Prevent form submission (demo only)
+document.getElementById('addVoucherForm').onsubmit = function(e) {
+    e.preventDefault();
+    // Get field values
+    const title = document.getElementById('voucherTitle').value.trim();
+    const code = document.getElementById('voucherCode').value.trim();
+    const discount = document.getElementById('voucherDiscount').value.trim();
+    let missing = [];
+
+    if (!title) missing.push("Voucher Title");
+    if (!code) missing.push("Voucher Code");
+    if (!discount) missing.push("Discount Percentage");
+
+    const errorDiv = document.getElementById('voucherError');
+    if (missing.length > 0) {
+        errorDiv.textContent = "Please fill in the following field(s): " + missing.join(", ");
+        errorDiv.classList.remove('d-none');
+        return;
+    } else {
+        errorDiv.classList.add('d-none');
+    }
+
+    // Here you would handle the form data (AJAX or form submit)
+    bootstrap.Modal.getInstance(document.getElementById('addVoucherModal')).hide();
+    this.reset();
+};
+
+// Show Edit Voucher Modal and populate fields (demo only)
+document.querySelectorAll('.voucher-actions .btn-primary').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        // For demo, just fill with sample data. Replace with AJAX for real data.
+        const voucherItem = btn.closest('.voucher-item');
+        document.getElementById('editVoucherTitle').value = voucherItem.querySelector('span').textContent.trim();
+        document.getElementById('editVoucherCode').value = "SAMPLECODE"; // Replace with real code
+        document.getElementById('editVoucherDiscount').value = "10"; // Replace with real discount
+        document.getElementById('editVoucherError').classList.add('d-none');
+        document.getElementById('editVoucherConfirmBtn').disabled = true;
+        var modal = new bootstrap.Modal(document.getElementById('editVoucherModal'));
+        modal.show();
+    });
+});
+
+// Enable Confirm button only if any field is changed
+const editFields = [
+    document.getElementById('editVoucherTitle'),
+    document.getElementById('editVoucherCode'),
+    document.getElementById('editVoucherDiscount')
+];
+let originalValues = {};
+
+function storeOriginalEditValues() {
+    originalValues = {
+        title: editFields[0].value,
+        code: editFields[1].value,
+        discount: editFields[2].value
+    };
+}
+document.getElementById('editVoucherModal').addEventListener('show.bs.modal', storeOriginalEditValues);
+
+editFields.forEach(function(field) {
+    field.addEventListener('input', function() {
+        const changed = editFields[0].value !== originalValues.title ||
+                        editFields[1].value !== originalValues.code ||
+                        editFields[2].value !== originalValues.discount;
+        document.getElementById('editVoucherConfirmBtn').disabled = !changed;
+    });
+});
+
+// Edit form validation
+document.getElementById('editVoucherForm').onsubmit = function(e) {
+    e.preventDefault();
+    const title = document.getElementById('editVoucherTitle').value.trim();
+    const code = document.getElementById('editVoucherCode').value.trim();
+    const discount = document.getElementById('editVoucherDiscount').value.trim();
+    let missing = [];
+    if (!title) missing.push("Voucher Title");
+    if (!code) missing.push("Voucher Code");
+    if (!discount) missing.push("Discount Percentage");
+    const errorDiv = document.getElementById('editVoucherError');
+    if (missing.length > 0) {
+        errorDiv.textContent = "Please fill in the following field(s): " + missing.join(", ");
+        errorDiv.classList.remove('d-none');
+        return;
+    } else {
+        errorDiv.classList.add('d-none');
+    }
+    bootstrap.Modal.getInstance(document.getElementById('editVoucherModal')).hide();
+    this.reset();
+};
 </script>
 </body>
 </html>

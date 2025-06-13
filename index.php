@@ -330,17 +330,23 @@ h6 {
                     <div class="payment-summary">
     <div class="total-row">
         <span>PAY</span>
-        <span><strong>₱</strong> <input type="number" id="pay-amount" class="form-control form-control-sm d-inline" style="width:180px;display:inline;" min="0" value="0"></span>
+        <span><strong>₱</strong>
+            <input type="number" id="pay-amount" class="form-control form-control-sm d-inline" style="width:180px;display:inline;" min="0" value="0">
+        </span>
     </div>
     <hr>
     <div class="total-row">
         <span>CHANGE</span>
-        <span><strong>₱</strong> <input type="text" id="change-amount" class="form-control form-control-sm d-inline" style="width:180px;display:inline;" value="0" readonly></span>
+        <span><strong>₱</strong>
+            <span id="change-amount-text">0</span>
+        </span>
     </div>
     <hr>
     <div class="total-row">
         <span>TOTAL</span>
-        <span><strong>₱</strong> <button class="btn btn-sm btn-light" id="total-amount">0</button></span>
+        <span><strong>₱</strong>
+            <span id="total-amount-text">0</span>
+        </span>
     </div>
     <!-- Button grid below total -->
     <div class="row mt-3 gx-2 gy-2">
@@ -414,12 +420,23 @@ document.addEventListener('DOMContentLoaded', function() {
         Object.values(cart).forEach(item => {
             total += item.price * item.quantity;
         });
-
         if (discountPercent > 0) {
             total = total - (total * (discountPercent / 100));
         }
-        document.getElementById('total-amount').textContent = total.toLocaleString();
+        document.getElementById('total-amount-text').textContent = total.toLocaleString();
         return total;
+    }
+
+    function updateChange() {
+        const total = updateTotal();
+        let pay = parseFloat(document.getElementById('pay-amount').value) || 0;
+        let changeText = "0";
+        if (pay < total) {
+            changeText = pay === 0 ? "0" : "Insufficient Amount";
+        } else {
+            changeText = (pay - total).toLocaleString();
+        }
+        document.getElementById('change-amount-text').textContent = changeText;
     }
 
     function renderCart() {
@@ -511,18 +528,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateChange();
     }
 
-    function updateChange() {
-        const total = updateTotal();
-        const payInput = document.getElementById('pay-amount');
-        let pay = parseFloat(payInput.value) || 0;
-        const changeField = document.getElementById('change-amount');
-        if (pay < total) {
-            changeField.value = pay === 0 ? "0" : "Insufficient Amount";
-        } else {
-            changeField.value = (pay - total).toLocaleString();
-        }
-    }
-
     document.getElementById('pay-amount').addEventListener('input', updateChange);
 
     document.getElementById('modeofpayment-btn').addEventListener('click', function() {
@@ -558,16 +563,9 @@ document.addEventListener('DOMContentLoaded', function() {
         renderCart();
     });
     document.getElementById('discount-btn').addEventListener('click', function() {
-        let input = prompt('Enter discount percentage (0-100):', discountPercent || 0);
-        if (input === null) return; 
-        input = parseFloat(input);
-        if (isNaN(input) || input < 0 || input > 100) {
-            alert('Please enter a valid discount percentage between 0 and 100.');
-            return;
-        }
-        discountPercent = input;
-        renderCart();
-    });
+    // Redirect to voucher management page
+    window.location.href = 'addVouchers.php?from=pos';
+});
     document.getElementById('printpay-btn').addEventListener('click', function() {
         const total = updateTotal();
         const pay = parseFloat(document.getElementById('pay-amount').value) || 0;

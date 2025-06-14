@@ -1,24 +1,30 @@
 <?php
 include('db/database.php');
 
-// Pagination setup
-$limit = 5; // Products per page
-$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-$offset = ($page - 1) * $limit;
+// Create the vouchers table if it doesn't exist
+mysqli_query($connection, "CREATE TABLE IF NOT EXISTS vouchers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    discount_percent INT NOT NULL
+)");
 
-// Search setup
-$search = isset($_GET['search']) ? mysqli_real_escape_string($connection, $_GET['search']) : '';
-$where = $search ? "WHERE product_name LIKE '%$search%' OR brand LIKE '%$search%'" : "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_voucher'])) {
+    $voucher_name = mysqli_real_escape_string($connection, $_POST['voucher_name']);
+    $voucher_discount = intval($_POST['voucher_discount']);
+    mysqli_query($connection, "INSERT INTO vouchers (title, discount_percent) VALUES ('$voucher_name', $voucher_discount)");
+    header("Location: addVouchers.php");
+    exit;
+}
 
-// Get total products count for pagination
-$count_query = "SELECT COUNT(*) as total FROM products $where";
-$count_result = mysqli_query($connection, $count_query);
-$total_products = mysqli_fetch_assoc($count_result)['total'];
-$total_pages = ceil($total_products / $limit);
-
-// Fetch products for current page
-$product_query = "SELECT * FROM products $where ORDER BY product_name ASC LIMIT $limit OFFSET $offset";
-$product_result = mysqli_query($connection, $product_query);
+// Handle voucher edit
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_voucher'])) {
+    $edit_id = intval($_POST['edit_voucher_id']);
+    $edit_name = mysqli_real_escape_string($connection, $_POST['edit_voucher_name']);
+    $edit_discount = intval($_POST['edit_voucher_discount']);
+    mysqli_query($connection, "UPDATE vouchers SET title='$edit_name', discount_percent=$edit_discount WHERE id=$edit_id");
+    header("Location: addVouchers.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,97 +41,60 @@ $product_result = mysqli_query($connection, $product_query);
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 0 20px rgba(0,0,0,0.12);
-            width: 1020px; /* Increased width for better switch label visibility */
-            min-height: 88vh; /* Slightly reduced height for less bottom gap */
+            width: 500px;
+            min-height: 60vh;
             padding: 40px 35px 35px 35px;
             display: flex;
             flex-direction: column;
         }
         .form-title { text-align: center; font-size: 2rem; font-weight: bold; color: #2c6ea3; margin-bottom: 25px; }
-        .voucher-list { max-height: 250px; overflow-y: auto; margin-bottom: 20px; }
+        .voucher-list { margin-bottom: 20px; }
         .voucher-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
         .voucher-item.active { background: #e6ffe6; }
         .voucher-actions button { margin-left: 5px; }
-        .products-list, .voucher-products-list { max-height: none; /* Remove scroll for product list */ overflow-y: visible; margin-bottom: 0; }
-        .products-list table, .voucher-products-list table { width: 100%; }
-        .products-list th, .voucher-products-list th { font-size: 1rem; }
-        .products-list td, .voucher-products-list td { font-size: 0.95rem; }
-        .pagination {
-            justify-content: center;
-            margin-top: 10px;
-            margin-bottom: 0;
-        }
-        .searchbar {
-            width: 100%;
-            max-width: 250px;
-            padding: 10px;
-            border-radius: 25px;
-            border: 1px solid #ccc;
-            background-color: #ddd;
-            outline: none;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        .Confirm-button {
-            border-radius: 15px; border: none; background-color: #1C8D20; width: 60%; text-align: center;
-            font-family: inter; cursor: pointer; font-weight: bold; padding: 12px; margin: 30px auto 0 auto;
-            color: #fff; font-size: 1.15rem; transition: background 0.2s; box-shadow: 0 2px 8px rgba(28,141,32,0.08);
-        }
-        .Confirm-button:hover { background-color: #157016; }
-        @media (max-width: 1000px) {
-            .tab-container { width: 100%; padding: 20px 5px 20px 5px; }
-        }
-        /* Switch styles */
         .switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 32px;
-  vertical-align: middle;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #dc3545;
-  transition: .4s;
-  border-radius: 32px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-.switch input:checked + .slider {
-  background-color: #1C8D20;
-}
-
-.switch input:checked + .slider:before {
-  transform: translateX(28px);
-}
-
-.slider:after {
-  content: '';
-  /* Remove ON/OFF text */
-}
-.switch input:checked + .slider:after {
-  content: '';
-}
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 32px;
+            vertical-align: middle;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #dc3545;
+            transition: .4s;
+            border-radius: 32px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        .switch input:checked + .slider {
+            background-color: #1C8D20;
+        }
+        .switch input:checked + .slider:before {
+            transform: translateX(28px);
+        }
+        .slider:after {
+            content: '';
+        }
+        .switch input:checked + .slider:after {
+            content: '';
+        }
     </style>
 </head>
 <body>
@@ -145,270 +114,118 @@ $product_result = mysqli_query($connection, $product_query);
 <div class="container mt-4">
     <div class="tab-container">
         <div class="form-title">Voucher Management</div>
-        <!-- Add Voucher Button Centered -->
-        <div class="d-flex justify-content-center mb-4">
-            <button type="button" class="btn btn-success" id="showAddVoucherModal" style="width: 320px; font-size: 1.2rem; font-weight: 600;">
-                + Add Voucher
-            </button>
-        </div>
-        <!-- Add Voucher Modal -->
-        <div class="modal fade" id="addVoucherModal" tabindex="-1" aria-labelledby="addVoucherModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="addVoucherModalLabel">Add New Voucher</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <form id="addVoucherForm">
-                  <div class="mb-3">
-                    <label for="voucherTitle" class="form-label">Voucher Title</label>
-                    <input type="text" class="form-control" id="voucherTitle">
-                  </div>
-                  <div class="mb-3">
-                    <label for="voucherCode" class="form-label">Voucher Code</label>
-                    <input type="text" class="form-control" id="voucherCode">
-                  </div>
-                  <div class="mb-3">
-                    <label for="voucherDiscount" class="form-label">Discount Percentage (%)</label>
-                    <input type="number" class="form-control" id="voucherDiscount" min="1" max="100">
-                  </div>
-                  <div id="voucherError" class="alert alert-danger py-2 px-3 mb-3 d-none" role="alert" style="font-size: 0.98rem;"></div>
-                  <button type="submit" class="btn btn-success w-100">Add Voucher</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Edit Voucher Modal -->
-        <div class="modal fade" id="editVoucherModal" tabindex="-1" aria-labelledby="editVoucherModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="editVoucherModalLabel">Edit Voucher</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <form id="editVoucherForm">
-                  <div class="mb-3">
-                    <label for="editVoucherTitle" class="form-label">Voucher Title</label>
-                    <input type="text" class="form-control" id="editVoucherTitle">
-                  </div>
-                  <div class="mb-3">
-                    <label for="editVoucherCode" class="form-label">Voucher Code</label>
-                    <input type="text" class="form-control" id="editVoucherCode">
-                  </div>
-                  <div class="mb-3">
-                    <label for="editVoucherDiscount" class="form-label">Discount Percentage (%)</label>
-                    <input type="number" class="form-control" id="editVoucherDiscount" min="1" max="100">
-                  </div>
-                  <div id="editVoucherError" class="alert alert-danger py-2 px-3 mb-3 d-none" role="alert" style="font-size: 0.98rem;"></div>
-                  <button type="submit" class="btn btn-success w-100" id="editVoucherConfirmBtn" disabled>Confirm</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-            <!-- Voucher List -->
-            <div class="col-md-4">
-                <div class="voucher-list">
-                    <div class="voucher-item active">
-                        <span style="color:#2c6ea3;font-weight:bold;">Summer Sale</span>
-                        <div class="voucher-actions d-flex align-items-center">
-                            <label class="switch mb-0">
-                              <input type="checkbox" checked>
-                              <span class="slider"></span>
+        <!-- Add Voucher Button -->
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addVoucherModal">
+            Add Voucher
+        </button>
+        <!-- Voucher List with Sliders -->
+        <div class="voucher-list" id="voucherList">
+            <?php
+            // Show vouchers with the most recently added on top
+            $result = mysqli_query($connection, "SELECT * FROM vouchers ORDER BY id DESC");
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '<div class="voucher-item" data-voucher-id="' . $row['id'] . '" data-discount="' . $row['discount_percent'] . '">
+                        <span style="color:#2c6ea3;font-weight:bold;">' . htmlspecialchars($row['title']) . ' <span class="badge bg-info ms-2">' . $row['discount_percent'] . '%</span></span>
+                        <div>
+                            <label class="switch mb-0 me-2">
+                                <input type="checkbox" class="voucher-switch" data-voucher-id="' . $row['id'] . '" data-discount="' . $row['discount_percent'] . '">
+                                <span class="slider"></span>
                             </label>
-                            <a href="editVoucher.php?id=1" class="btn btn-sm btn-primary ms-2 me-2">Edit</a>
-                            <button class="btn btn-sm btn-danger">Delete</button>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editVoucherModal' . $row['id'] . '">Edit</button>
                         </div>
-                    </div>
-                    <div class="voucher-item">
-                        <span style="color:#2c6ea3;font-weight:bold;">Holiday Bundle</span>
-                        <div class="voucher-actions d-flex align-items-center">
-                            <label class="switch mb-0">
-                              <input type="checkbox">
-                              <span class="slider"></span>
-                            </label>
-                            <a href="editVoucher.php?id=2" class="btn btn-sm btn-primary ms-2 me-2">Edit</a>
-                            <button class="btn btn-sm btn-danger">Delete</button>
+                    </div>';
+
+                // Edit Modal for this voucher
+                echo '
+                <div class="modal fade" id="editVoucherModal' . $row['id'] . '" tabindex="-1" aria-labelledby="editVoucherModalLabel' . $row['id'] . '" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <form method="post" class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="editVoucherModalLabel' . $row['id'] . '">Edit Voucher</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <input type="hidden" name="edit_voucher_id" value="' . $row['id'] . '">
+                        <div class="mb-3">
+                          <label for="editVoucherName' . $row['id'] . '" class="form-label">Voucher Name</label>
+                          <input type="text" class="form-control" id="editVoucherName' . $row['id'] . '" name="edit_voucher_name" value="' . htmlspecialchars($row['title']) . '" required>
                         </div>
-                    </div>
-                    <!-- More vouchers... -->
-                </div>
-            </div>
-            <!-- Voucher Products Management -->
-            <div class="col-md-8">
-                <div class="mb-3">
-                    <strong>Products in Voucher:</strong>
-                    <div class="voucher-products-list">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Product Name</th>
-                                    <th>Brand</th>
-                                    <th>Price</th>
-                                    <th>Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Mouse X100</td>
-                                    <td>Logitech</td>
-                                    <td>500</td>
-                                    <td><button class="btn btn-sm btn-danger">Remove</button></td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Keyboard K200</td>
-                                    <td>HP</td>
-                                    <td>700</td>
-                                    <td><button class="btn btn-sm btn-danger">Remove</button></td>
-                                </tr>
-                                <!-- More products... -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div>
-                    <strong>Add Product to Voucher:</strong>
-                    <form id="searchForm" class="d-flex mb-2" style="gap:10px;" onsubmit="return false;">
-                        <input type="text" id="searchInput" name="search" class="searchbar" placeholder="Search product...">
+                        <div class="mb-3">
+                          <label for="editVoucherDiscount' . $row['id'] . '" class="form-label">Discount (%)</label>
+                          <input type="number" class="form-control" id="editVoucherDiscount' . $row['id'] . '" name="edit_voucher_discount" min="1" max="100" value="' . $row['discount_percent'] . '" required>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" name="edit_voucher" class="btn btn-success">Save Changes</button>
+                      </div>
                     </form>
-                    <div class="products-list" id="productsList">
-                        <!-- Products table will be loaded here by AJAX -->
-                    </div>
+                  </div>
                 </div>
-            </div>
+                ';
+            }
+            ?>
+        </div>
+        <div class="alert alert-info mt-4">
+            <strong>How it works:</strong> Turn on a voucher to apply its discount to all items at checkout in the POS. Only one voucher can be active at a time.
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Add Voucher Modal -->
+<div class="modal fade" id="addVoucherModal" tabindex="-1" aria-labelledby="addVoucherModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addVoucherModalLabel">Add Voucher</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="voucherName" class="form-label">Voucher Name</label>
+          <input type="text" class="form-control" id="voucherName" name="voucher_name" required>
+        </div>
+        <div class="mb-3">
+          <label for="voucherDiscount" class="form-label">Discount (%)</label>
+          <input type="number" class="form-control" id="voucherDiscount" name="voucher_discount" min="1" max="100" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" name="add_voucher" class="btn btn-primary">Create Voucher</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-function loadProducts(page = 1, search = '') {
-    $.get('fetch_products.php', { page: page, search: search }, function(data) {
-        $('#productsList').html(data);
-    });
-}
-
-// Initial load
-$(document).ready(function() {
-    loadProducts();
-
-    // Live search
-    $('#searchInput').on('input', function() {
-        loadProducts(1, $(this).val());
-    });
-
-    // Pagination click (delegated)
-    $('#productsList').on('click', '.pagination a', function(e) {
-        e.preventDefault();
-        const page = $(this).data('page');
-        const search = $('#searchInput').val();
-        loadProducts(page, search);
+// Only one voucher can be active at a time
+document.querySelectorAll('.voucher-switch').forEach(function(switchEl) {
+    switchEl.addEventListener('change', function() {
+        if (this.checked) {
+            // Uncheck all other switches
+            document.querySelectorAll('.voucher-switch').forEach(function(other) {
+                if (other !== switchEl) other.checked = false;
+            });
+            // Save active voucher id and discount in localStorage
+            localStorage.setItem('active_voucher_id', this.getAttribute('data-voucher-id'));
+            localStorage.setItem('active_voucher_discount', this.getAttribute('data-discount'));
+        } else {
+            // If unchecked, remove from localStorage
+            localStorage.removeItem('active_voucher_id');
+            localStorage.removeItem('active_voucher_discount');
+        }
     });
 });
 
-// Show modal on button click
-document.getElementById('showAddVoucherModal').onclick = function() {
-    var modal = new bootstrap.Modal(document.getElementById('addVoucherModal'));
-    modal.show();
-};
-
-// Prevent form submission (demo only)
-document.getElementById('addVoucherForm').onsubmit = function(e) {
-    e.preventDefault();
-    // Get field values
-    const title = document.getElementById('voucherTitle').value.trim();
-    const code = document.getElementById('voucherCode').value.trim();
-    const discount = document.getElementById('voucherDiscount').value.trim();
-    let missing = [];
-
-    if (!title) missing.push("Voucher Title");
-    if (!code) missing.push("Voucher Code");
-    if (!discount) missing.push("Discount Percentage");
-
-    const errorDiv = document.getElementById('voucherError');
-    if (missing.length > 0) {
-        errorDiv.textContent = "Please fill in the following field(s): " + missing.join(", ");
-        errorDiv.classList.remove('d-none');
-        return;
-    } else {
-        errorDiv.classList.add('d-none');
-    }
-
-    // Here you would handle the form data (AJAX or form submit)
-    bootstrap.Modal.getInstance(document.getElementById('addVoucherModal')).hide();
-    this.reset();
-};
-
-// Show Edit Voucher Modal and populate fields (demo only)
-document.querySelectorAll('.voucher-actions .btn-primary').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        // For demo, just fill with sample data. Replace with AJAX for real data.
-        const voucherItem = btn.closest('.voucher-item');
-        document.getElementById('editVoucherTitle').value = voucherItem.querySelector('span').textContent.trim();
-        document.getElementById('editVoucherCode').value = "SAMPLECODE"; // Replace with real code
-        document.getElementById('editVoucherDiscount').value = "10"; // Replace with real discount
-        document.getElementById('editVoucherError').classList.add('d-none');
-        document.getElementById('editVoucherConfirmBtn').disabled = true;
-        var modal = new bootstrap.Modal(document.getElementById('editVoucherModal'));
-        modal.show();
+// On page load, restore the active voucher switch
+window.addEventListener('DOMContentLoaded', function() {
+    var activeId = localStorage.getItem('active_voucher_id');
+    document.querySelectorAll('.voucher-switch').forEach(function(switchEl) {
+        if (switchEl.getAttribute('data-voucher-id') === activeId) {
+            switchEl.checked = true;
+        }
     });
 });
-
-// Enable Confirm button only if any field is changed
-const editFields = [
-    document.getElementById('editVoucherTitle'),
-    document.getElementById('editVoucherCode'),
-    document.getElementById('editVoucherDiscount')
-];
-let originalValues = {};
-
-function storeOriginalEditValues() {
-    originalValues = {
-        title: editFields[0].value,
-        code: editFields[1].value,
-        discount: editFields[2].value
-    };
-}
-document.getElementById('editVoucherModal').addEventListener('show.bs.modal', storeOriginalEditValues);
-
-editFields.forEach(function(field) {
-    field.addEventListener('input', function() {
-        const changed = editFields[0].value !== originalValues.title ||
-                        editFields[1].value !== originalValues.code ||
-                        editFields[2].value !== originalValues.discount;
-        document.getElementById('editVoucherConfirmBtn').disabled = !changed;
-    });
-});
-
-// Edit form validation
-document.getElementById('editVoucherForm').onsubmit = function(e) {
-    e.preventDefault();
-    const title = document.getElementById('editVoucherTitle').value.trim();
-    const code = document.getElementById('editVoucherCode').value.trim();
-    const discount = document.getElementById('editVoucherDiscount').value.trim();
-    let missing = [];
-    if (!title) missing.push("Voucher Title");
-    if (!code) missing.push("Voucher Code");
-    if (!discount) missing.push("Discount Percentage");
-    const errorDiv = document.getElementById('editVoucherError');
-    if (missing.length > 0) {
-        errorDiv.textContent = "Please fill in the following field(s): " + missing.join(", ");
-        errorDiv.classList.remove('d-none');
-        return;
-    } else {
-        errorDiv.classList.add('d-none');
-    }
-    bootstrap.Modal.getInstance(document.getElementById('editVoucherModal')).hide();
-    this.reset();
-};
 </script>
 </body>
 </html>

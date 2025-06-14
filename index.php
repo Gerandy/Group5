@@ -1,21 +1,31 @@
 <?php 
 include ('db/database.php'); 
 
-// Pagination setup
+// Pagination and search setup
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $limit = 15;
 $offset = ($page - 1) * $limit;
 
-// Get products for current page
-$query = "SELECT * FROM products LIMIT $limit OFFSET $offset";
-$result = mysqli_query($connection, $query);
+// Handle search
+$search = isset($_GET['search']) ? mysqli_real_escape_string($connection, $_GET['search']) : '';
 
-// Get total number of products for pagination
-$total_query = "SELECT COUNT(*) as total FROM products";
+// Build WHERE clause to exclude archived products and handle search
+if ($search) {
+    $where = "WHERE (product_name LIKE '%$search%' OR brand LIKE '%$search%') AND archived = 0";
+} else {
+    $where = "WHERE archived = 0";
+}
+
+// Get total products for pagination (with search, excluding archived)
+$total_query = "SELECT COUNT(*) as total FROM products $where";
 $total_result = mysqli_query($connection, $total_query);
 $total_row = mysqli_fetch_assoc($total_result);
 $total_products = $total_row['total'];
-$total_pages = ceil($total_products / $limit);
+$total_pages = max(1, ceil($total_products / $limit));
+
+// Get products for current page (with search, excluding archived)
+$query = "SELECT * FROM products $where LIMIT $limit OFFSET $offset";
+$result = mysqli_query($connection, $query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -270,9 +280,10 @@ h6 {
            
             <div class="col-lg-8">
                 <div class="pos-container">
-                    <div class="search-container" style="display: flex; align-items: center; justify-content: flex-start;">
-                        <input type="text" class="searchbar" placeholder="Search product...">
-                    </div>
+                    <form method="get" class="search-container mb-3" style="display: flex; align-items: center; justify-content: flex-start;">
+    <input type="text" class="searchbar" name="search" placeholder="Search product..." value="<?php echo htmlspecialchars($search); ?>">
+    <button type="submit" class="btn btn-primary ms-2">Search</button>
+</form>
                     <hr class="separator-line">
                     <div class="product-table">
                         <table class="table table-striped">
@@ -343,10 +354,16 @@ h6 {
     </div>
     <hr>
     <div class="total-row">
-        <span>TOTAL</span>
-        <span><strong>₱</strong>
-            <span id="total-amount-text">0</span>
-        </span>
+        <span>Subtotal</span>
+        <span><strong>₱</strong> <span id="subtotal-amount-text">0</span></span>
+    </div>
+    <div class="total-row">
+        <span>Discount</span>
+        <span><strong>₱</strong> <span id="discount-amount-text">0</span></span>
+    </div>
+    <div class="total-row">
+        <span>Total</span>
+        <span><strong>₱</strong> <span id="total-amount-text">0</span></span>
     </div>
     <!-- Button grid below total -->
     <div class="row mt-3 gx-2 gy-2">
@@ -354,7 +371,7 @@ h6 {
             <button class="btn btn-danger w-100" id="discount-btn">Discount</button>
         </div>
         <div class="col-6 d-grid">
-            <button class="btn btn-danger w-100" id="clearall-btn">Clear All</button>
+            <button class="btn btn-danger w-100" id="clearAllBtn">Clear All</button>
         </div>
         <div class="col-6 d-grid">
             <button class="btn btn-danger w-100" id="modeofpayment-btn">Mode of Payment</button>
@@ -380,8 +397,54 @@ document.addEventListener('DOMContentLoaded', function() {
     payInput.value = 0;
     payInput.disabled = true;
 
-    const cart = {};
+    // 1. Load cart from localStorage on page load
+let cart = {};
+
+function loadCart() {
+    const saved = localStorage.getItem('cart');
+    cart = saved ? JSON.parse(saved) : {};
+}
+
+// 2. Save cart to localStorage whenever it changes
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// 3. Call loadCart() on page load
+window.addEventListener('DOMContentLoaded', function() {
+    loadCart();
+    renderCart(); // Make sure renderCart uses the global 'cart' variable
+});
+
+// 4. When adding/removing items, always call saveCart()
+function addToCart(productId, productData) {
+    // ...your logic to add/update cart...
+    cart[productId] = productData;
+    saveCart();
+    renderCart();
+}
+
+function removeFromCart(productId) {
+    delete cart[productId];
+    saveCart();
+    renderCart();
+}
+
     let discountPercent = 0;
+    if (localStorage.getItem('active_voucher_discount')) {
+        discountPercent = parseInt(localStorage.getItem('active_voucher_discount'), 10);
+    }
+
+    function saveCart() {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+    function loadCart() {
+        const saved = localStorage.getItem('cart');
+        if (saved) cart = JSON.parse(saved);
+        else cart = {};
+    }
+
+    loadCart();
 
     document.querySelectorAll('.addbutton').forEach(function(button) {
         button.addEventListener('click', function() {
@@ -411,6 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     stock: stock
                 };
             }
+            saveCart();
             renderCart();
         });
     });
@@ -501,6 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     alert('Cannot add more than available stock!');
                 }
+                saveCart();
                 renderCart();
             });
         });
@@ -512,6 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     delete cart[id];
                 }
+                saveCart();
                 renderCart();
             });
         });
@@ -520,11 +586,34 @@ document.addEventListener('DOMContentLoaded', function() {
             span.addEventListener('click', function() {
                 const id = this.getAttribute('data-product-id');
                 delete cart[id];
+                saveCart();
                 renderCart();
             });
         });
 
-        updateTotal();
+        let subtotal = 0;
+        for (const id in cart) {
+            subtotal += cart[id].price * cart[id].quantity;
+        }
+
+        // Get discount percent from localStorage (set by addVouchers.php)
+        let discountPercent = 0;
+        if (localStorage.getItem('active_voucher_discount')) {
+            discountPercent = parseInt(localStorage.getItem('active_voucher_discount'), 10);
+        }
+
+        let discount = 0;
+        if (discountPercent > 0) {
+            discount = subtotal * (discountPercent / 100);
+        }
+
+        let total = subtotal - discount;
+
+        // Update your summary display
+        document.getElementById('subtotal-amount-text').textContent = subtotal.toLocaleString();
+        document.getElementById('discount-amount-text').textContent = discount > 0 ? '-' + discount.toLocaleString() : '0';
+        document.getElementById('total-amount-text').textContent = total.toLocaleString();
+
         updateChange();
     }
 
@@ -558,7 +647,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Invalid choice. Please select 1, 2, or 3.');
         }
     });
-    document.getElementById('clearall-btn').addEventListener('click', function() {
+    document.getElementById('clearAllBtn').addEventListener('click', function() {
         for (let key in cart) delete cart[key];
         renderCart();
     });
@@ -569,7 +658,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('printpay-btn').addEventListener('click', function() {
         const total = updateTotal();
         const pay = parseFloat(document.getElementById('pay-amount').value) || 0;
-        const change = parseFloat(document.getElementById('change-amount').value.replace(/,/g, '')) || 0;
+        const changeText = document.getElementById('change-amount-text').textContent.replace(/,/g, '');
+        let change = 0;
+        if (!isNaN(changeText) && changeText !== "Insufficient Amount") {
+            change = parseFloat(changeText);
+        }
+
         if (Object.keys(cart).length === 0) {
             alert('Cart is empty. Cannot print receipt.');
             return;
@@ -578,6 +672,9 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Insufficient amount.');
             return;
         }
+
+        // Generate unique receipt number
+        const receiptNumber = 'RCPT-' + Date.now() + '-' + Math.floor(Math.random() * 900 + 100);
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
@@ -600,21 +697,26 @@ document.addEventListener('DOMContentLoaded', function() {
         y += 8;
         doc.setFontSize(9);
         doc.text('Date: ' + new Date().toLocaleString(), 5, y);
+        y += 5;
+        doc.setFontSize(10);
+        doc.text('Receipt No: ' + receiptNumber, 5, y);
         y += 6;
         doc.setFontSize(10);
         doc.text('Item', 5, y);
-        doc.text('Qty', 45, y, { align: 'center' });
+        doc.text('Qty', 40, y, { align: 'center' });
         doc.text('Price', 75, y, { align: 'right' });
         y += 6;
         doc.setLineWidth(0.1);
         doc.line(5, y - 5, 75, y - 5);
 
+        // Items with wrapped names
         Object.values(cart).forEach(item => {
             doc.setFontSize(9);
-            doc.text(item.name, 5, y);
+            const nameLines = doc.splitTextToSize(item.name, 32);
+            doc.text(nameLines, 5, y);
             doc.text(String(item.quantity), 40, y, { align: 'center' });
             doc.text((item.price * item.quantity).toLocaleString(), 75, y, { align: 'right' });
-            y += 6;
+            y += 6 * nameLines.length;
         });
 
         doc.line(5, y - 2, 75, y - 2);
@@ -623,34 +725,6 @@ document.addEventListener('DOMContentLoaded', function() {
         doc.setFontSize(10);
         let subtotal = 0;
         Object.values(cart).forEach(item => { subtotal += item.price * item.quantity; });
-
- 
-const controlNumber = 'CN-' + Date.now() + '-' + Math.floor(Math.random() * 900 + 100);
-
-
-doc.setFontSize(10);
-doc.text('Control No: ' + controlNumber, 5, y);
-y += 6;
-
-        fetch('log_transaction.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                cart: Object.values(cart),
-                subtotal: subtotal,
-                discount: discountPercent,
-                total: total,
-                pay: pay,
-                change: change,
-                control_number: controlNumber 
-            })
-        });
-
-        fetch('update_stock.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(Object.values(cart))
-        });
 
         doc.text('Subtotal:', 5, y);
         doc.text(subtotal.toLocaleString(), 75, y, { align: 'right' });
@@ -674,26 +748,39 @@ y += 6;
 
         doc.save('receipt.pdf');
 
+        // Log transaction and update stock, including receipt number
+        fetch('log_transaction.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                cart: Object.values(cart),
+                subtotal: subtotal,
+                discount: discountPercent,
+                total: total,
+                pay: pay,
+                change: change,
+                receipt_number: receiptNumber
+            })
+        });
 
-        for (let key in cart) delete cart[key];
+        fetch('update_stock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Object.values(cart))
+        });
+
+        // Clear cart and localStorage
+        cart = {};
+        localStorage.removeItem('cart');
         renderCart();
 
- 
         setTimeout(() => {
             location.reload();
         }, 500); 
     });
 
     
-    document.querySelector('.searchbar').addEventListener('input', function() {
-        const searchValue = this.value.toLowerCase();
-        document.querySelectorAll('.product-table tr').forEach(function(row, idx) {
-           
-            if (idx === 0) return;
-            const rowText = row.textContent.toLowerCase();
-            row.style.display = rowText.includes(searchValue) ? '' : 'none';
-        });
-    });
+    
 
    
     updateTotal();
@@ -789,6 +876,36 @@ function reloadProductTable() {
             });
         });
 }
+
+// On page load
+window.addEventListener('DOMContentLoaded', function() {
+    loadCart();
+    renderCart();
+});
+
+// When adding/removing items:
+function addToCart(productId, ...otherArgs) {
+    // ...your add logic...
+    saveCart();
+    renderCart();
+}
+function removeFromCart(productId) {
+    // ...your remove logic...
+    saveCart();
+    renderCart();
+}
+
+// Add this function to clear the cart and localStorage
+function clearAllCart() {
+    cart = {};
+    localStorage.removeItem('cart');
+    renderCart();
+}
+
+// Example: Attach to a "Clear All" button
+document.getElementById('clearAllBtn').addEventListener('click', function() {
+    clearAllCart();
+});
 </script>
 </body>
 </html>
@@ -797,7 +914,7 @@ function reloadProductTable() {
     <ul class="pagination justify-content-center mt-4">
         <?php for ($p = 1; $p <= $total_pages; $p++): ?>
             <li class="page-item <?php if ($p == $page) echo 'active'; ?>">
-                <a class="page-link" href="?page=<?php echo $p; ?>"><?php echo $p; ?></a>
+                <a class="page-link" href="?page=<?php echo $p; ?><?php if($search) echo '&search=' . urlencode($search); ?>"><?php echo $p; ?></a>
             </li>
         <?php endfor; ?>
     </ul>

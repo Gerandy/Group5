@@ -1,3 +1,39 @@
+<?php
+include('db/database.php');
+
+if (isset($_GET['archive_id'])) {
+    $archive_id = intval($_GET['archive_id']);
+    mysqli_query($connection, "UPDATE products SET archived = 1 WHERE id = $archive_id");
+    header("Location: product.php");
+    exit;
+}
+
+// Restore product from archive
+if (isset($_GET['restore_id'])) {
+    $restore_id = intval($_GET['restore_id']);
+    mysqli_query($connection, "UPDATE products SET archived = 0 WHERE id = $restore_id");
+    header("Location: product.php");
+    exit;
+}
+
+// Pagination setup
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$limit = 15;
+$offset = ($page - 1) * $limit;
+
+// Get products for current page
+$query = "SELECT * FROM products WHERE archived = 0 LIMIT $limit OFFSET $offset";
+$result = mysqli_query($connection, $query);
+
+// Get total number of products for pagination
+$total_query = "SELECT COUNT(*) as total FROM products WHERE archived = 0";
+$total_result = mysqli_query($connection, $total_query);
+$total_row = mysqli_fetch_assoc($total_result);
+$total_products = $total_row['total'];
+$total_pages = ceil($total_products / $limit);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -182,23 +218,10 @@
                             </thead>
                             <tbody>
                                 <?php
-                                include('db/database.php');
 
-// Pagination setup
-$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-$limit = 15;
-$offset = ($page - 1) * $limit;
-
-// Get products for current page
-$query = "SELECT * FROM products LIMIT $limit OFFSET $offset";
+// Update your product query to exclude archived products
+$query = "SELECT * FROM products WHERE archived = 0 LIMIT $limit OFFSET $offset";
 $result = mysqli_query($connection, $query);
-
-// Get total number of products for pagination
-$total_query = "SELECT COUNT(*) as total FROM products";
-$total_result = mysqli_query($connection, $total_query);
-$total_row = mysqli_fetch_assoc($total_result);
-$total_products = $total_row['total'];
-$total_pages = ceil($total_products / $limit);
 
                                 if (mysqli_num_rows($result) > 0) {
                                     while ($row = mysqli_fetch_assoc($result)) {
@@ -210,17 +233,27 @@ $total_pages = ceil($total_products / $limit);
                                         echo '<td>' . htmlspecialchars($row['price']) . '</td>';
                                         echo '<td>
                                                 <a href="editProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #0d6efd; text-decoration: underline; margin-right: 15px;">Edit</a>
-                                                <a href="deleteProduct.php?id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>
+                                                <a href="product.php?archive_id=' . htmlspecialchars($row['id']) . '" style="color: #dc3545; text-decoration: underline;" onclick="return confirm(\'Are you sure you want to archive this product?\')">Archive</a>
                                             </td>';
                                         echo '</tr>';
                                     }
                                 } else {
-                                    echo '<tr><td colspan="5">No products found</td></tr>';
+                                    echo '<tr><td colspan="6">No products found</td></tr>';
                                 }
                                 ?>
                             </tbody>
                         </table>
                     </div>
+                    
+    
+    
+            
+        </tbody>
+    </table>
+</div>
+<a href="archivedProducts.php" class="btn btn-secondary mb-3">
+    View Archived Products
+</a>
                 </div>
             </div>
         </div>

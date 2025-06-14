@@ -7,6 +7,16 @@ if (file_exists($logFile)) {
 
 // Pagination setup
 $logsPerPage = 10; // Show only 10 items per page
+
+// --- Add search logic ---
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+if ($search !== '') {
+    $logs = array_filter($logs, function($log) use ($search) {
+        return isset($log['receipt_number']) && stripos($log['receipt_number'], $search) !== false;
+    });
+}
+// --- End search logic ---
+
 $totalLogs = count($logs);
 $totalPages = ceil($totalLogs / $logsPerPage);
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -40,6 +50,12 @@ $logsToShow = array_slice(array_reverse($logs), $start, $logsPerPage);
 <div class="container mt-4">
     <center><h2 class="mb-4 fw-bold" style="color:#2c6ea3;">Transaction Logs</h2></center>
     <div class="mx-auto" style="max-width:1200px;">
+        <!-- --- Add search bar here --- -->
+        <form class="mb-3 d-flex justify-content-end" method="get" style="max-width:400px; margin-left:auto;">
+            <input type="text" name="search" class="form-control me-2" placeholder="Search transaction number..." value="<?= htmlspecialchars($search) ?>">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <!-- --- End search bar --- -->
         <!-- Card with increased height and pagination inside -->
         <div class="bg-white rounded-4 shadow-lg p-3 pb-3" style="height:650px; display: flex; flex-direction: column; justify-content: flex-start;">
             <!-- Table header (fixed) -->
@@ -68,11 +84,7 @@ $logsToShow = array_slice(array_reverse($logs), $start, $logsPerPage);
                         <tr style="height:50px;">
                             <td class="text-break" style="width: 14%;"><?= htmlspecialchars($log['datetime']) ?></td>
                             <td class="text-break" style="width: 32%; word-break:break-word;">
-                                <?php foreach ($log['cart'] as $item): ?>
-                                    <span class="badge bg-light text-dark mb-1 fw-semibold" style="font-size:1rem;">
-                                        <?= htmlspecialchars($item['name']) ?> x<?= $item['quantity'] ?> (₱<?= $item['price'] ?>)
-                                    </span><br>
-                                <?php endforeach; ?>
+                                <?= isset($log['receipt_number']) ? htmlspecialchars($log['receipt_number']) : 'N/A' ?>
                             </td>
                             <td class="text-break fw-semibold text-success" style="width: 11%;">₱<?= htmlspecialchars($log['total']) ?></td>
                             <td class="text-break" style="width: 11%;">₱<?= htmlspecialchars($log['pay']) ?></td>
@@ -99,7 +111,7 @@ $logsToShow = array_slice(array_reverse($logs), $start, $logsPerPage);
                     <ul class="pagination justify-content-center mb-0">
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                             <li class="page-item<?= $i == $page ? ' active' : '' ?>">
-                                <a class="page-link rounded-pill" href="?page=<?= $i ?>"><?= $i ?></a>
+                                <a class="page-link rounded-pill" href="?page=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
                             </li>
                         <?php endfor; ?>
                     </ul>

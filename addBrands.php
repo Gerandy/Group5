@@ -1,3 +1,44 @@
+<?php
+include('db/database.php');
+
+// Create brands table if it doesn't exist
+mysqli_query($connection, "CREATE TABLE IF NOT EXISTS brands (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    brand_name VARCHAR(100) NOT NULL
+)");
+
+// Add brand
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_brand'])) {
+    $brand_name = trim($_POST['brand_name']);
+    if ($brand_name !== '') {
+        mysqli_query($connection, "INSERT INTO brands (brand_name) VALUES ('" . mysqli_real_escape_string($connection, $brand_name) . "')");
+        header("Location: addBrands.php");
+        exit;
+    }
+}
+
+// Delete brand
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']);
+    mysqli_query($connection, "DELETE FROM brands WHERE id = $delete_id");
+    header("Location: addBrands.php");
+    exit;
+}
+
+// Edit brand
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_brand'])) {
+    $edit_id = intval($_POST['edit_id']);
+    $edit_name = trim($_POST['edit_brand_name']);
+    if ($edit_name !== '') {
+        mysqli_query($connection, "UPDATE brands SET brand_name='" . mysqli_real_escape_string($connection, $edit_name) . "' WHERE id=$edit_id");
+        header("Location: addBrands.php");
+        exit;
+    }
+}
+
+// Fetch all brands
+$brands_result = mysqli_query($connection, "SELECT * FROM brands ORDER BY brand_name ASC");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,7 +141,7 @@
             font-weight: 500;
             font-size: 1.05rem;
         }
-        .delete-btn {
+        .delete-btn, .edit-btn, .save-btn, .cancel-btn {
             background: #dc3545;
             color: #fff;
             border: none;
@@ -109,9 +150,28 @@
             font-size: 0.95rem;
             font-family: 'Inter', Arial, Helvetica, sans-serif;
             transition: background 0.2s;
+            margin-left: 5px;
+        }
+        .edit-btn {
+            background: #0d6efd;
+        }
+        .edit-btn:hover {
+            background: #0a58ca;
         }
         .delete-btn:hover {
             background: #b52a37;
+        }
+        .save-btn {
+            background: #1C8D20;
+        }
+        .save-btn:hover {
+            background: #146c16;
+        }
+        .cancel-btn {
+            background: #6c757d;
+        }
+        .cancel-btn:hover {
+            background: #495057;
         }
     </style>
 </head>
@@ -132,29 +192,30 @@
 <div class="container mt-4">
     <div class="tab-container">
         <div class="form-title">Add New Brand</div>
-        <form autocomplete="off" novalidate>
+        <form autocomplete="off" novalidate method="post">
             <div class="mb-3">
                 <label for="brand_name" class="form-label">Brand Name:</label>
                 <input type="text" class="form-control" id="brand_name" name="brand_name" required>
             </div>
             <center>
-                <button type="submit" class="Confirm-button" id="confirmBtn" disabled>Confirm</button>
+                <button type="submit" class="Confirm-button" id="confirmBtn" name="add_brand" disabled>Confirm</button>
             </center>
         </form>
         <div class="brand-list">
             <div class="form-title" style="font-size:1.2rem; margin-bottom:10px; margin-top:0; text-align:left;">Registered Brands</div>
-            <div class="brand-item">
-                <span class="brand-name">Sample Brand 1</span>
-                <button class="delete-btn" disabled>Delete</button>
-            </div>
-            <div class="brand-item">
-                <span class="brand-name">Sample Brand 2</span>
-                <button class="delete-btn" disabled>Delete</button>
-            </div>
-            <div class="brand-item">
-                <span class="brand-name">Sample Brand 3</span>
-                <button class="delete-btn" disabled>Delete</button>
-            </div>
+            <?php while ($brand = mysqli_fetch_assoc($brands_result)): ?>
+                <div class="brand-item" id="brand-item-<?php echo $brand['id']; ?>">
+                    <form method="post" class="d-flex align-items-center w-100" style="gap:8px;">
+                        <input type="hidden" name="edit_id" value="<?php echo $brand['id']; ?>">
+                        <span class="brand-name" id="brand-name-<?php echo $brand['id']; ?>"><?php echo htmlspecialchars($brand['brand_name']); ?></span>
+                        <input type="text" name="edit_brand_name" class="form-control d-none" id="edit-input-<?php echo $brand['id']; ?>" value="<?php echo htmlspecialchars($brand['brand_name']); ?>" style="max-width:180px;">
+                        <button type="button" class="edit-btn btn btn-sm" onclick="editBrand(<?php echo $brand['id']; ?>)">Edit</button>
+                        <button type="submit" class="save-btn btn btn-sm d-none" name="edit_brand" id="save-btn-<?php echo $brand['id']; ?>">Save</button>
+                        <button type="button" class="cancel-btn btn btn-sm d-none" onclick="cancelEdit(<?php echo $brand['id']; ?>)" id="cancel-btn-<?php echo $brand['id']; ?>">Cancel</button>
+                        <a href="addBrands.php?delete_id=<?php echo $brand['id']; ?>" class="delete-btn btn btn-sm" onclick="return confirm('Delete this brand?')">Delete</a>
+                    </form>
+                </div>
+            <?php endwhile; ?>
         </div>
     </div>
 </div>
@@ -165,6 +226,26 @@
     brandInput.addEventListener('input', function() {
         confirmBtn.disabled = this.value.trim() === '';
     });
+
+    // Edit brand inline
+    function editBrand(id) {
+        document.getElementById('brand-name-' + id).classList.add('d-none');
+        document.getElementById('edit-input-' + id).classList.remove('d-none');
+        document.getElementById('save-btn-' + id).classList.remove('d-none');
+        document.getElementById('cancel-btn-' + id).classList.remove('d-none');
+        // Hide edit button
+        let editBtn = document.querySelector('#brand-item-' + id + ' .edit-btn');
+        if (editBtn) editBtn.classList.add('d-none');
+    }
+    function cancelEdit(id) {
+        document.getElementById('brand-name-' + id).classList.remove('d-none');
+        document.getElementById('edit-input-' + id).classList.add('d-none');
+        document.getElementById('save-btn-' + id).classList.add('d-none');
+        document.getElementById('cancel-btn-' + id).classList.add('d-none');
+        // Show edit button
+        let editBtn = document.querySelector('#brand-item-' + id + ' .edit-btn');
+        if (editBtn) editBtn.classList.remove('d-none');
+    }
 </script>
 </body>
 </html>

@@ -16,6 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Error: " . mysqli_error($connection);
     } 
 }
+
+$brands_result = mysqli_query($connection, "SELECT brand_name FROM brands ORDER BY brand_name ASC");
 ?>
 
 <!DOCTYPE html>
@@ -156,7 +158,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="mb-3">
                 <label for="brand" class="form-label">Brand:</label>
-                <input type="text" class="form-control" id="brand" name="brand" required>
+                <select class="form-control" id="brand" name="brand" required>
+                    <option value="" disabled selected>Select a brand</option>
+                    <?php
+                    while ($brand_row = mysqli_fetch_assoc($brands_result)) {
+                        echo '<option value="' . htmlspecialchars($brand_row['brand_name']) . '">' . htmlspecialchars($brand_row['brand_name']) . '</option>';
+                    }
+                    ?>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="stock_left" class="form-label">Stock:</label>

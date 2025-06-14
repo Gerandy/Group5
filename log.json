@@ -604,5 +604,69 @@
         "control_number": "CN-1749786274735-700",
         "id": "txn_684b9ea2b44ce",
         "datetime": "2025-06-13 05:44:34"
+    },
+    {
+        "cart": [
+            {
+                "id": "10",
+                "name": "Gigabyte NVIDIA\u00c2\u00ae GeForce RTX\u00c2\u2122 4060 Gaming OC GV-N4060",
+                "price": 21228,
+                "quantity": 1,
+                "stock": 2
+            }
+        ],
+        "subtotal": 21228,
+        "discount": 12,
+        "total": 18680.64,
+        "pay": 60000,
+        "change": 41319.36,
+        "control_number": "CN-1749871573945-163",
+        "id": "txn_684cebd5e78e6",
+        "datetime": "2025-06-14 05:26:13"
+    },
+    {
+        "cart": [
+            {
+                "id": "8",
+                "name": "GALAX NVIDIA\u00c2\u00ae GeForce RTX\u00c2\u2122 4060 Ti 1-Click OC 46ISL8M",
+                "price": 26705,
+                "quantity": 1,
+                "stock": 8
+            },
+            {
+                "id": "17",
+                "name": "Silverstone SST-ST50F-ES230 500 watts 80 Plus Power Sup",
+                "price": 1685,
+                "quantity": 1,
+                "stock": 23
+            }
+        ],
+        "subtotal": 28390,
+        "discount": 12,
+        "total": 24983.2,
+        "pay": 26000,
+        "change": 1016.8,
+        "control_number": "CN-1749871771726-758",
+        "id": "txn_684cec9bb2264",
+        "datetime": "2025-06-14 05:29:31"
+    },
+    {
+        "cart": [
+            {
+                "id": "1",
+                "name": "Ryzen 5 3600g",
+                "price": 6999,
+                "quantity": 1,
+                "stock": 5
+            }
+        ],
+        "subtotal": 6999,
+        "discount": 12,
+        "total": 6159.12,
+        "pay": 50000,
+        "change": 43840.88,
+        "receipt_number": "RCPT-1749871991157-690",
+        "id": "txn_684ced7729393",
+        "datetime": "2025-06-14 05:33:11"
     }
 ]
